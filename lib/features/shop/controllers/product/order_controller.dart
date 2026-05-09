@@ -13,6 +13,7 @@ import '../../models/cart_item_model.dart';
 import '../../models/order_model.dart';
 import 'cart_controller.dart';
 import 'checkout_controller.dart';
+import '../product/coupon_controller.dart';
 
 class OrderController extends GetxController {
   static OrderController get instance => Get.find();
@@ -70,6 +71,16 @@ class OrderController extends GetxController {
 
       // Save the order to Firestore
       await orderRepository.saveOrder(order, userId);
+
+      // If a coupon was applied, claim its usage for this order
+      try {
+        final couponController = Get.find<CouponController>();
+        if (couponController.appliedCoupon.value != null) {
+          await couponController.claimCouponForOrder(order.id);
+        }
+      } catch (_) {
+        // ignore if coupon controller not found or claim failed (non-blocking)
+      }
 
       // Update product popularity counters based on purchased quantities.
       await orderRepository.incrementProductOrderCounts(orderItems);

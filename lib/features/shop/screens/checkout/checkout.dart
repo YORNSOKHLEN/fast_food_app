@@ -13,6 +13,7 @@ import '../../../../utils/helpers/helper_functions.dart';
 import '../../../../utils/helpers/pricing_calculator.dart';
 import '../../../../utils/popups/loaders.dart';
 import '../../controllers/product/order_controller.dart';
+import '../../controllers/product/coupon_controller.dart';
 import '../cart/widgets/cart_item.dart';
 
 class CheckoutScreen extends StatelessWidget {
@@ -24,7 +25,8 @@ class CheckoutScreen extends StatelessWidget {
     final cartController = CartController.instance;
     final subTotal = cartController.totalCartPrice.value;
     final orderController = Get.put(OrderController());
-    final totalAmount = YPricingCalculator.calculateTotalPrice(subTotal, '');
+    // ensure coupon controller is available
+    final couponController = Get.put(CouponController());
 
     return Scaffold(
       appBar: YAppBar(
@@ -38,7 +40,12 @@ class CheckoutScreen extends StatelessWidget {
       /// Checkout Button
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(YSizes.defaultSpace),
-        child: ElevatedButton(
+        child: Obx(() {
+          final discount = couponController.discount.value;
+          final totalAmount = YPricingCalculator.calculateTotalPrice(subTotal, '') - discount;
+          final safeTotal = totalAmount < 0 ? 0.0 : totalAmount;
+
+          return ElevatedButton(
           // onPressed: () => Get.to(
           //   () => SuccessScreen(
           //     image: YImage.paymentSuccess,
@@ -51,14 +58,15 @@ class CheckoutScreen extends StatelessWidget {
           // child: Text(
           //   'Checkout \$${YPricingCalculator.calculateTotalPrice(subTotal, '')}',
           // ),
-          onPressed: subTotal > 0
-              ? () => orderController.processOrder(totalAmount)
-              : () => YLoaders.warningSnackBar(
-                  title: 'Empty Cart',
-                  message: 'Add items in the cart in order to proceed.',
-                ),
-          child: Text('Checkout \$$totalAmount'),
-        ),
+            onPressed: subTotal > 0
+                ? () => orderController.processOrder(safeTotal)
+                : () => YLoaders.warningSnackBar(
+                    title: 'Empty Cart',
+                    message: 'Add items in the cart in order to proceed.',
+                  ),
+            child: Text('Checkout \$$safeTotal'),
+          );
+        }),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -78,7 +86,7 @@ class CheckoutScreen extends StatelessWidget {
                 showBorder: true,
                 padding: const EdgeInsets.all(YSizes.md),
                 backgroundColor: dark ? YColors.black : YColors.white,
-                child: const Column(
+                child: Column(
                   children: [
                     // Pricing
                     YBillingAmountSection(),
