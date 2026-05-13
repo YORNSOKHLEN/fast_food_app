@@ -1,49 +1,11 @@
-import '../../features/shop/models/banner_model.dart';
 import '../../features/shop/models/brand_model.dart';
 import '../../features/shop/models/category_model.dart';
 import '../../features/shop/models/product_model.dart';
-import '../../routes/routes.dart';
+import '../../features/shop/models/poster_model.dart';
 import '../../utils/constants/image_strings.dart';
 
 class YDummyData {
-  /// -- Banners
-  static final List<BannerModel> banners = [
-    BannerModel(
-      imageUrl: YImage.banner1,
-      targetScreen: YRoutes.order,
-      active: true,
-    ),
-    BannerModel(
-      imageUrl: YImage.banner2,
-      targetScreen: YRoutes.cart,
-      active: true,
-    ),
-    BannerModel(
-      imageUrl: YImage.banner3,
-      targetScreen: YRoutes.favourites,
-      active: true,
-    ),
-    BannerModel(
-      imageUrl: YImage.banner4,
-      targetScreen: YRoutes.search,
-      active: true,
-    ),
-    BannerModel(
-      imageUrl: YImage.banner5,
-      targetScreen: YRoutes.settings,
-      active: true,
-    ),
-    BannerModel(
-      imageUrl: YImage.banner6,
-      targetScreen: YRoutes.userAddress,
-      active: true,
-    ),
-    BannerModel(
-      imageUrl: YImage.banner8,
-      targetScreen: YRoutes.checkout,
-      active: false,
-    ),
-  ];
+  // Banners have been replaced by posters. Use `YDummyData.posters` for poster data.
 
   /// - List of all Categories
   static final List<CategoryModel> categories = [
@@ -81,152 +43,9 @@ class YDummyData {
     CategoryModel(
       id: '6',
       image: YImage.iconStore,
-      name: 'Top Stores',
+      name: 'Korean Food',
       isFeatured: true,
     ),
-
-    // Smartphone Subcategories
-    // CategoryModel(
-    //   id: '7',
-    //   image: YImage.phoneIcon,
-    //   name: 'Flagship Phones',
-    //   parentId: '1',
-    //   isFeatured: false,
-    // ),
-    // CategoryModel(
-    //   id: '8',
-    //   image: YImage.phoneIcon,
-    //   name: 'Gaming Phones',
-    //   parentId: '1',
-    //   isFeatured: false,
-    // ),
-    // CategoryModel(
-    //   id: '9',
-    //   image: YImage.phoneIcon,
-    //   name: 'Budget Phones',
-    //   parentId: '1',
-    //   isFeatured: false,
-    // ),
-    // CategoryModel(
-    //   id: '10',
-    //   image: YImage.phoneIcon,
-    //   name: 'Mid Range Phones',
-    //   parentId: '1',
-    //   isFeatured: false,
-    // ),
-    //
-    // // Smartwatch Subcategories
-    // CategoryModel(
-    //   id: '11',
-    //   image: YImage.smartWatchIcon,
-    //   name: 'Fitness Tracker',
-    //   parentId: '2',
-    //   isFeatured: false,
-    // ),
-    // CategoryModel(
-    //   id: '12',
-    //   image: YImage.smartWatchIcon,
-    //   name: 'Heart Rate Smartwatch',
-    //   parentId: '2',
-    //   isFeatured: false,
-    // ),
-    // CategoryModel(
-    //   id: '13',
-    //   image: YImage.smartWatchIcon,
-    //   name: 'GPS Smart Watch',
-    //   parentId: '2',
-    //   isFeatured: false,
-    // ),
-    // CategoryModel(
-    //   id: '14',
-    //   image: YImage.smartWatchIcon,
-    //   name: 'Medical Alert Smart Watch',
-    //   parentId: '2',
-    //   isFeatured: false,
-    // ),
-    // CategoryModel(
-    //   id: '15',
-    //   image: YImage.smartWatchIcon,
-    //   name: 'Cellular Smart Watch',
-    //   parentId: '2',
-    //   isFeatured: false,
-    // ),
-
-    // // Headphones Subcategories
-    // CategoryModel(
-    //   id: '16',
-    //   image: YImage.headphonesIcon,
-    //   name: 'Headphone',
-    //   parentId: '3',
-    //   isFeatured: false,
-    // ),
-    // CategoryModel(
-    //   id: '17',
-    //   image: YImage.headphonesIcon,
-    //   name: 'Earphones',
-    //   parentId: '3',
-    //   isFeatured: false,
-    // ),
-    //
-    // // PowerBanks Subcategories
-    // CategoryModel(
-    //   id: '18',
-    //   image: YImage.powerBankIcon,
-    //   name: 'Standard Power Bank',
-    //   parentId: '4',
-    //   isFeatured: false,
-    // ),
-    // CategoryModel(
-    //   id: '19',
-    //   image: YImage.powerBankIcon,
-    //   name: 'Solar Power Bank',
-    //   parentId: '4',
-    //   isFeatured: false,
-    // ),
-    // CategoryModel(
-    //   id: '20',
-    //   image: YImage.powerBankIcon,
-    //   name: 'Wireless Power Bank',
-    //   parentId: '4',
-    //   isFeatured: false,
-    // ),
-    // CategoryModel(
-    //   id: '21',
-    //   image: YImage.powerBankIcon,
-    //   name: 'Accessories',
-    //   parentId: '4',
-    //   isFeatured: false,
-    // ),
-    //
-    // // GameControllers Subcategories
-    // CategoryModel(
-    //   id: '22',
-    //   image: YImage.gameControllerIcon,
-    //   name: 'GamePads',
-    //   parentId: '5',
-    //   isFeatured: false,
-    // ),
-    // CategoryModel(
-    //   id: '23',
-    //   image: YImage.gameControllerIcon,
-    //   name: 'JoySticks',
-    //   parentId: '5',
-    //   isFeatured: false,
-    // ),
-    // CategoryModel(
-    //   id: '24',
-    //   image: YImage.gameControllerIcon,
-    //   name: 'Steering Wheels',
-    //   parentId: '5',
-    //   isFeatured: false,
-    // ),
-    // CategoryModel(
-    //   id: '25',
-    //   image: YImage.gameControllerIcon,
-    //   name: 'motion controllers',
-    //   parentId: '5',
-    //   isFeatured: false,
-    // ),
   ];
 
   /// -- List of all Brands
@@ -238,6 +57,13 @@ class YDummyData {
       productsCount: 265,
       isFeatured: true,
     ),
+    BrandModel(
+      id: '2',
+      image: YImage.koiBrand,
+      name: 'Koi',
+      productsCount: 180,
+      isFeatured: true,
+    ),
   ];
 
   /// -- List of all Products
@@ -245,8 +71,6 @@ class YDummyData {
     ProductModel(
       id: '001',
       title: 'Texas Double Whopper Burger',
-      productType: 'ProductType.single',
-      stock: 150,
       price: 10,
       isFeatured: true,
       thumbnail: YImage.texasDoubleWhopperBurger,
@@ -259,69 +83,12 @@ class YDummyData {
         productsCount: 265,
         isFeatured: true,
       ),
-      // images: [
-      //   YImage.originalChickenSandwichBurger,
-      //   YImage.whopperWithCheeseBurger,
-      // ],
       salePrice: 9,
       categoryId: '1',
-      // productAttributes: [
-      //   ProductAttributeModel(name: 'Size', values: ['Regular', 'Large']),
-      //   ProductAttributeModel(
-      //     name: 'Spicy Level',
-      //     values: ['Mild', 'Medium', 'Spicy'],
-      //   ),
-      // ],
-      // productVariations: [
-      //   ProductVariationModel(
-      //     id: '1',
-      //     stock: 20,
-      //     price: 10,
-      //     salePrice: 9,
-      //     attributeValues: {'Size': 'Regular', 'Spicy Level': 'Mild'},
-      //   ),
-      //   ProductVariationModel(
-      //     id: '2',
-      //     stock: 20,
-      //     price: 10,
-      //     salePrice: 9,
-      //     attributeValues: {'Size': 'Regular', 'Spicy Level': 'Medium'},
-      //   ),
-      //   ProductVariationModel(
-      //     id: '3',
-      //     stock: 20,
-      //     price: 10,
-      //     salePrice: 9,
-      //     attributeValues: {'Size': 'Regular', 'Spicy Level': 'Spicy'},
-      //   ),
-      //   ProductVariationModel(
-      //     id: '4',
-      //     stock: 20,
-      //     price: 15,
-      //     salePrice: 13,
-      //     attributeValues: {'Size': 'Large', 'Spicy Level': 'Mild'},
-      //   ),
-      //   ProductVariationModel(
-      //     id: '5',
-      //     stock: 30,
-      //     price: 15,
-      //     salePrice: 13,
-      //     attributeValues: {'Size': 'Large', 'Spicy Level': 'Medium'},
-      //   ),
-      //   ProductVariationModel(
-      //     id: '6',
-      //     stock: 20,
-      //     price: 15,
-      //     salePrice: 13,
-      //     attributeValues: {'Size': 'Large', 'Spicy Level': 'Spicy'},
-      //   ),
-      // ],
     ),
     ProductModel(
       id: '002',
       title: 'Original Chicken Sandwich Burger',
-      productType: 'ProductType.single',
-      stock: 150,
       price: 12,
       isFeatured: true,
       thumbnail: YImage.originalChickenSandwichBurger,
@@ -334,69 +101,12 @@ class YDummyData {
         productsCount: 265,
         isFeatured: true,
       ),
-      // images: [
-      //   YImage.originalChickenSandwichBurger,
-      //   YImage.whopperWithCheeseBurger,
-      // ],
       salePrice: 10,
       categoryId: '1',
-      // productAttributes: [
-      //   ProductAttributeModel(name: 'Size', values: ['Regular', 'Large']),
-      //   ProductAttributeModel(
-      //     name: 'Spicy Level',
-      //     values: ['Mild', 'Medium', 'Spicy'],
-      //   ),
-      // ],
-      // productVariations: [
-      //   ProductVariationModel(
-      //     id: '1',
-      //     stock: 20,
-      //     price: 12,
-      //     salePrice: 10,
-      //     attributeValues: {'Size': 'Regular', 'Spicy Level': 'Mild'},
-      //   ),
-      //   ProductVariationModel(
-      //     id: '2',
-      //     stock: 20,
-      //     price: 12,
-      //     salePrice: 10,
-      //     attributeValues: {'Size': 'Regular', 'Spicy Level': 'Medium'},
-      //   ),
-      //   ProductVariationModel(
-      //     id: '3',
-      //     stock: 20,
-      //     price: 12,
-      //     salePrice: 10,
-      //     attributeValues: {'Size': 'Regular', 'Spicy Level': 'Spicy'},
-      //   ),
-      //   ProductVariationModel(
-      //     id: '4',
-      //     stock: 20,
-      //     price: 17,
-      //     salePrice: 15,
-      //     attributeValues: {'Size': 'Large', 'Spicy Level': 'Mild'},
-      //   ),
-      //   ProductVariationModel(
-      //     id: '5',
-      //     stock: 30,
-      //     price: 17,
-      //     salePrice: 15,
-      //     attributeValues: {'Size': 'Large', 'Spicy Level': 'Medium'},
-      //   ),
-      //   ProductVariationModel(
-      //     id: '6',
-      //     stock: 20,
-      //     price: 17,
-      //     salePrice: 15,
-      //     attributeValues: {'Size': 'Large', 'Spicy Level': 'Spicy'},
-      //   ),
-      // ],
     ),
     ProductModel(
       id: '003',
       title: 'Whopper with Cheese Burger',
-      productType: 'ProductType.single',
-      stock: 150,
       price: 7,
       isFeatured: true,
       thumbnail: YImage.whopperWithCheeseBurger,
@@ -409,69 +119,12 @@ class YDummyData {
         productsCount: 265,
         isFeatured: true,
       ),
-      // images: [
-      //   YImage.originalChickenSandwichBurger,
-      //   YImage.whopperWithCheeseBurger,
-      // ],
       salePrice: 7,
       categoryId: '1',
-      // productAttributes: [
-      //   ProductAttributeModel(name: 'Size', values: ['Regular', 'Large']),
-      //   ProductAttributeModel(
-      //     name: 'Spicy Level',
-      //     values: ['Mild', 'Medium', 'Spicy'],
-      //   ),
-      // ],
-      // productVariations: [
-      //   ProductVariationModel(
-      //     id: '1',
-      //     stock: 20,
-      //     price: 7,
-      //     salePrice: 7,
-      //     attributeValues: {'Size': 'Regular', 'Spicy Level': 'Mild'},
-      //   ),
-      //   ProductVariationModel(
-      //     id: '2',
-      //     stock: 20,
-      //     price: 7,
-      //     salePrice: 7,
-      //     attributeValues: {'Size': 'Regular', 'Spicy Level': 'Medium'},
-      //   ),
-      //   ProductVariationModel(
-      //     id: '3',
-      //     stock: 20,
-      //     price: 7,
-      //     salePrice: 7,
-      //     attributeValues: {'Size': 'Regular', 'Spicy Level': 'Spicy'},
-      //   ),
-      //   ProductVariationModel(
-      //     id: '4',
-      //     stock: 20,
-      //     price: 10,
-      //     salePrice: 10,
-      //     attributeValues: {'Size': 'Large', 'Spicy Level': 'Mild'},
-      //   ),
-      //   ProductVariationModel(
-      //     id: '5',
-      //     stock: 30,
-      //     price: 10,
-      //     salePrice: 10,
-      //     attributeValues: {'Size': 'Large', 'Spicy Level': 'Medium'},
-      //   ),
-      //   ProductVariationModel(
-      //     id: '6',
-      //     stock: 20,
-      //     price: 10,
-      //     salePrice: 10,
-      //     attributeValues: {'Size': 'Large', 'Spicy Level': 'Spicy'},
-      //   ),
-      // ],
     ),
     ProductModel(
       id: '004',
       title: 'Seafood Pizza ',
-      productType: 'ProductType.single',
-      stock: 150,
       price: 13,
       isFeatured: true,
       thumbnail: YImage.seafoodPizza,
@@ -484,63 +137,52 @@ class YDummyData {
         productsCount: 265,
         isFeatured: true,
       ),
-      // images: [
-      //   YImage.originalChickenSandwichBurger,
-      //   YImage.whopperWithCheeseBurger,
-      // ],
       salePrice: 10,
       categoryId: '2',
-      // productAttributes: [
-      //   ProductAttributeModel(name: 'Size', values: ['Regular', 'Large']),
-      //   ProductAttributeModel(
-      //     name: 'Spicy Level',
-      //     values: ['Mild', 'Medium', 'Spicy'],
-      //   ),
-      // ],
-      // productVariations: [
-      //   ProductVariationModel(
-      //     id: '1',
-      //     stock: 20,
-      //     price: 13,
-      //     salePrice: 10,
-      //     attributeValues: {'Size': 'Regular', 'Spicy Level': 'Mild'},
-      //   ),
-      //   ProductVariationModel(
-      //     id: '2',
-      //     stock: 20,
-      //     price: 13,
-      //     salePrice: 10,
-      //     attributeValues: {'Size': 'Regular', 'Spicy Level': 'Medium'},
-      //   ),
-      //   ProductVariationModel(
-      //     id: '3',
-      //     stock: 20,
-      //     price: 13,
-      //     salePrice: 10,
-      //     attributeValues: {'Size': 'Regular', 'Spicy Level': 'Spicy'},
-      //   ),
-      //   ProductVariationModel(
-      //     id: '4',
-      //     stock: 20,
-      //     price: 15,
-      //     salePrice: 13,
-      //     attributeValues: {'Size': 'Large', 'Spicy Level': 'Mild'},
-      //   ),
-      //   ProductVariationModel(
-      //     id: '5',
-      //     stock: 30,
-      //     price: 15,
-      //     salePrice: 13,
-      //     attributeValues: {'Size': 'Large', 'Spicy Level': 'Medium'},
-      //   ),
-      //   ProductVariationModel(
-      //     id: '6',
-      //     stock: 20,
-      //     price: 15,
-      //     salePrice: 13,
-      //     attributeValues: {'Size': 'Large', 'Spicy Level': 'Spicy'},
-      //   ),
-      // ],
     ),
+  ];
+
+  /// -- List of all Posters
+  static final List<PosterModel> posters = [
+    // Original onboarding posters
+    PosterModel(id: 'poster_1', imageUrl: YImage.poster1, active: true),
+    PosterModel(id: 'poster_2', imageUrl: YImage.poster2, active: true),
+
+    // // Converted banner posters (replacing old BannerModel entries)
+    // PosterModel(
+    //   id: 'poster_banner_1',
+    //   imageUrl: YImage.onBoardingImage1,
+    //   active: true,
+    // ),
+    // PosterModel(
+    //   id: 'poster_banner_2',
+    //   imageUrl: YImage.onBoardingImage2,
+    //   active: true,
+    // ),
+    // PosterModel(
+    //   id: 'poster_banner_3',
+    //   imageUrl: YImage.onBoardingImage3,
+    //   active: true,
+    // ),
+    // PosterModel(
+    //   id: 'poster_banner_4',
+    //   imageUrl: YImage.texasDoubleWhopperBurger,
+    //   active: true,
+    // ),
+    // PosterModel(
+    //   id: 'poster_banner_5',
+    //   imageUrl: YImage.originalChickenSandwichBurger,
+    //   active: true,
+    // ),
+    // PosterModel(
+    //   id: 'poster_banner_6',
+    //   imageUrl: YImage.whopperWithCheeseBurger,
+    //   active: true,
+    // ),
+    // PosterModel(
+    //   id: 'poster_banner_7',
+    //   imageUrl: YImage.seafoodPizza,
+    //   active: false,
+    // ),
   ];
 }

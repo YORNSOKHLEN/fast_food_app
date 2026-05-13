@@ -12,7 +12,9 @@ class SocialButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(LoginController());
+    final controller = Get.isRegistered<LoginController>()
+        ? Get.find<LoginController>()
+        : Get.put(LoginController());
     final dark = YHelperFunctions.isDarkMode(context);
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -28,21 +30,6 @@ class SocialButton extends StatelessWidget {
               width: YSizes.iconMd,
               height: YSizes.iconMd,
               image: AssetImage(YImage.googleLogo),
-            ),
-          ),
-        ),
-        const SizedBox(width: YSizes.spaceBtwItems),
-        Container(
-          decoration: BoxDecoration(
-            border: Border.all(color: dark ? YColors.darkGrey : YColors.grey),
-            borderRadius: BorderRadius.circular(100),
-          ),
-          child: IconButton(
-            onPressed: () {},
-            icon: const Image(
-              width: YSizes.iconMd,
-              height: YSizes.iconMd,
-              image: AssetImage(YImage.facebookLogo),
             ),
           ),
         ),

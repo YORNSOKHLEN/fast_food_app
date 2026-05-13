@@ -3,8 +3,8 @@ import 'package:get/get.dart';
 
 import '../../../../data/repositories/coupon_repository.dart';
 import '../../../../utils/constants/image_strings.dart';
-import '../../../../utils/constants/colors.dart';
 import '../../../../utils/popups/full_screen_loader.dart';
+import '../../../../utils/popups/loaders.dart';
 
 class CreateCouponController extends GetxController {
   static CreateCouponController get instance => Get.find();
@@ -16,9 +16,13 @@ class CreateCouponController extends GetxController {
   final minOrder = TextEditingController();
   final maxDiscount = TextEditingController();
   final maxUses = TextEditingController();
-  final perUser = TextEditingController();
+  final perUser = TextEditingController(text: '1');
+  final targetUserId = TextEditingController();
+  final targetProductId = TextEditingController();
 
   final type = 'percentage'.obs;
+  final scope = 'all'.obs;
+  final productScope = 'all'.obs;
   final expiresAt = Rxn<DateTime>();
 
   final _repo = Get.put(CouponRepository());
@@ -31,6 +35,8 @@ class CreateCouponController extends GetxController {
     maxDiscount.dispose();
     maxUses.dispose();
     perUser.dispose();
+    targetUserId.dispose();
+    targetProductId.dispose();
     super.onClose();
   }
 
@@ -47,6 +53,14 @@ class CreateCouponController extends GetxController {
 
   Future<void> createCoupon() async {
     if (!formKey.currentState!.validate()) return;
+    if (scope.value == 'single' && targetUserId.text.trim().isEmpty) {
+      YLoaders.errorSnackBar(title: 'Error', message: 'Target user ID is required for a single-user coupon');
+      return;
+    }
+    if (productScope.value == 'single' && targetProductId.text.trim().isEmpty) {
+      YLoaders.errorSnackBar(title: 'Error', message: 'Target product ID is required for a single-product coupon');
+      return;
+    }
     try {
       YFullScreenLoader.openLoadingDialog('Creating coupon...', YImage.docerAnimation);
 
@@ -58,17 +72,24 @@ class CreateCouponController extends GetxController {
         'maxDiscountAmount': maxDiscount.text.trim().isEmpty ? null : double.tryParse(maxDiscount.text.trim()),
         'expiresAt': expiresAt.value,
         'maxUses': maxUses.text.trim().isEmpty ? null : int.tryParse(maxUses.text.trim()),
-        'perUserLimit': perUser.text.trim().isEmpty ? null : int.tryParse(perUser.text.trim()),
+        'perUserLimit': perUser.text.trim().isEmpty ? 1 : (int.tryParse(perUser.text.trim()) ?? 1),
+        'targetUserId': scope.value == 'single' ? targetUserId.text.trim() : null,
+        'targetProductId': productScope.value == 'single' ? targetProductId.text.trim() : null,
         'active': true,
       };
 
       final id = await _repo.createCoupon(data);
       YFullScreenLoader.stopLoading();
+
+      YLoaders.successSnackBar(
+        title: 'Success',
+        message: 'Coupon created: $id',
+      );
+
       Get.back();
-      Get.snackbar('Success', 'Coupon created: $id', backgroundColor: YColors.buttonGreen.withValues(alpha: 0.08));
     } catch (e) {
       YFullScreenLoader.stopLoading();
-      Get.snackbar('Error', e.toString(), backgroundColor: YColors.error.withValues(alpha: 0.08));
+      YLoaders.errorSnackBar(title: 'Error', message: e.toString());
     }
   }
 }

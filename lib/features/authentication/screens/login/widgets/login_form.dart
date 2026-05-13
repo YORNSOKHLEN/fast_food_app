@@ -26,8 +26,12 @@ class LoginForm extends StatelessWidget {
               controller: controller.email,
               validator: (value) => YValidator.validateEmail(value),
               decoration: InputDecoration(
-                prefixIcon: Icon(Iconsax.direct_right),
+                prefixIcon: const Icon(Iconsax.direct_right),
                 labelText: YText.email,
+                hintText: 'Enter your email',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
             ),
             const SizedBox(height: YSizes.spaceBtwInputField),
@@ -40,7 +44,8 @@ class LoginForm extends StatelessWidget {
                 obscureText: controller.hidePassword.value,
                 decoration: InputDecoration(
                   labelText: YText.password,
-                  prefixIcon: Icon(Iconsax.password_check),
+                  hintText: 'Enter your password',
+                  prefixIcon: const Icon(Iconsax.password_check),
                   suffixIcon: IconButton(
                     onPressed: () => controller.hidePassword.value =
                         !controller.hidePassword.value,
@@ -49,6 +54,9 @@ class LoginForm extends StatelessWidget {
                           ? Iconsax.eye_slash
                           : Iconsax.eye,
                     ),
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
                   ),
                 ),
               );
@@ -87,7 +95,18 @@ class LoginForm extends StatelessWidget {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () => controller.emailAndPasswordSignIn(),
-                child: Text(YText.signIn),
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                child: Text(
+                  YText.signIn,
+                  style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                        color: Colors.white,
+                      ),
+                ),
               ),
             ),
             const SizedBox(height: YSizes.spaceBtwItems),
@@ -97,6 +116,12 @@ class LoginForm extends StatelessWidget {
               width: double.infinity,
               child: OutlinedButton(
                 onPressed: () => Get.to(() => SignupScreen()),
+                style: OutlinedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
                 child: const Text(YText.createAccount),
               ),
             ),

@@ -2,9 +2,6 @@
 class Assets {
   Assets._();
 
-  static const String bannersPromoIphone = 'assets/images/banners/promo_iphone.png';
-  static const String bannersPromoRedmiTurbo = 'assets/images/banners/promo_redmi_turbo.png';
-  static const String bannersPromoSamsung = 'assets/images/banners/promo_samsung.png';
   static const String categoriesCoolingFan = 'assets/icons/categories/cooling_fan.png';
   static const String categoriesGameController = 'assets/icons/categories/game_controller.png';
   static const String categoriesHeadphones = 'assets/icons/categories/headphones.png';

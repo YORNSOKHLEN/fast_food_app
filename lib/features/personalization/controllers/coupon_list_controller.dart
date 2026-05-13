@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 
 import '../../../../data/repositories/authentication/authentication_repository.dart';
 import '../../../../data/repositories/coupon_repository.dart';
+import '../../personalization/controllers/user_controller.dart';
 import '../../shop/models/coupon_model.dart';
 
 class CouponListController extends GetxController {
@@ -23,8 +24,15 @@ class CouponListController extends GetxController {
       isLoading.value = true;
       hasError.value = false;
       final userId = AuthenticationRepository.instance.authUser?.uid;
+      final userRole = Get.isRegistered<UserController>()
+          ? UserController.instance.user.value.role
+          : '';
+
+      final isAdmin = userRole == 'admin';
       if (userId == null || userId.isEmpty) {
         coupons.assignAll(await couponRepository.fetchActiveCoupons());
+      } else if (isAdmin) {
+        coupons.assignAll(await couponRepository.fetchActiveCoupons(includeTargetedCoupons: true));
       } else {
         coupons.assignAll(await couponRepository.fetchActiveCouponsForUser(userId));
       }

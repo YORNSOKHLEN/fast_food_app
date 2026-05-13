@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../models/coupon_model.dart';
+import '../../models/cart_item_model.dart';
 import '../../../../data/repositories/coupon_repository.dart';
 import '../../../../data/repositories/authentication/authentication_repository.dart';
+import 'cart_controller.dart';
 
 class CouponController extends GetxController {
   static CouponController get instance => Get.find();
@@ -38,7 +40,13 @@ class CouponController extends GetxController {
       final normalized = code.trim();
       if (normalized.isEmpty) return 'Enter coupon code';
 
-      final coupon = await couponRepository.fetchCouponByCode(normalized);
+      final user = AuthenticationRepository.instance.authUser;
+      if (user == null) return 'You must be logged in to use coupons';
+
+      final coupon = await couponRepository.fetchCouponByCode(
+        normalized,
+        userId: user.uid,
+      );
       if (coupon == null) return 'Invalid coupon code';
 
       // check active
@@ -53,12 +61,19 @@ class CouponController extends GetxController {
         return 'Order total must be at least \$${coupon.minOrderAmount} to use this coupon';
       }
 
-      // per-user limit
-      final user = AuthenticationRepository.instance.authUser;
-      if (user == null) return 'You must be logged in to use coupons';
+      final targetProductId = coupon.targetProductId;
+      if (targetProductId != null && targetProductId.isNotEmpty) {
+        final cartItems = CartController.instance.cartItems;
+        final hasTargetProduct = cartItems.any((CartItemModel item) => item.productId == targetProductId);
+        if (!hasTargetProduct) {
+          return 'This coupon is only valid for a specific product in your cart';
+        }
+      }
+
+      // one customer can use a coupon only once
       final userUsage = await couponRepository.userUsageCount(coupon.id, user.uid);
-      if (coupon.perUserLimit != null && userUsage >= coupon.perUserLimit!) {
-        return 'You have already used this coupon the maximum allowed times';
+      if (userUsage > 0) {
+        return 'You have already used this coupon';
       }
 
       // global usage

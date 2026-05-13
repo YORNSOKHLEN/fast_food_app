@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:fast_food/utils/constants/sizes.dart';
 
-import '../../../../utils/constants/colors.dart';
 import '../../../../features/personalization/controllers/create_coupon_controller.dart';
 
 class CreateCouponScreen extends StatelessWidget {
@@ -37,6 +36,62 @@ class CreateCouponScreen extends StatelessWidget {
                       decoration: const InputDecoration(labelText: 'Type'),
                     )),
                 const SizedBox(height: YSizes.spaceBtwItems),
+                Obx(() => DropdownButtonFormField<String>(
+                      initialValue: controller.scope.value,
+                      items: const [
+                        DropdownMenuItem(value: 'all', child: Text('All users')),
+                        DropdownMenuItem(value: 'single', child: Text('Specific user')),
+                      ],
+                      onChanged: (v) => controller.scope.value = v ?? 'all',
+                      decoration: const InputDecoration(labelText: 'Coupon Scope'),
+                    )),
+                const SizedBox(height: YSizes.spaceBtwItems),
+                Obx(() {
+                  if (controller.scope.value != 'single') return const SizedBox.shrink();
+                  return Column(
+                    children: [
+                      TextFormField(
+                        controller: controller.targetUserId,
+                        decoration: const InputDecoration(labelText: 'Target User ID'),
+                        validator: (v) {
+                          if (controller.scope.value == 'single' && (v == null || v.trim().isEmpty)) {
+                            return 'Target User ID required';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: YSizes.spaceBtwItems),
+                    ],
+                  );
+                }),
+                Obx(() => DropdownButtonFormField<String>(
+                      initialValue: controller.productScope.value,
+                      items: const [
+                        DropdownMenuItem(value: 'all', child: Text('All products')),
+                        DropdownMenuItem(value: 'single', child: Text('Specific product')),
+                      ],
+                      onChanged: (v) => controller.productScope.value = v ?? 'all',
+                      decoration: const InputDecoration(labelText: 'Product Scope'),
+                    )),
+                const SizedBox(height: YSizes.spaceBtwItems),
+                Obx(() {
+                  if (controller.productScope.value != 'single') return const SizedBox.shrink();
+                  return Column(
+                    children: [
+                      TextFormField(
+                        controller: controller.targetProductId,
+                        decoration: const InputDecoration(labelText: 'Target Product ID'),
+                        validator: (v) {
+                          if (controller.productScope.value == 'single' && (v == null || v.trim().isEmpty)) {
+                            return 'Target Product ID required';
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: YSizes.spaceBtwItems),
+                    ],
+                  );
+                }),
                 TextFormField(
                   controller: controller.amount,
                   keyboardType: TextInputType.number,

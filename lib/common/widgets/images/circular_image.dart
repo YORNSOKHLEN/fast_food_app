@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import '../../../utils/constants/colors.dart';
+import '../../../utils/constants/image_strings.dart';
 import '../../../utils/constants/sizes.dart';
 import '../../../utils/helpers/helper_functions.dart';
 import '../shimmers/shimmer.dart';
@@ -29,10 +30,11 @@ class YCircularImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Auto-detect network images by checking if URL starts with http:// or https://
+    final fallbackImage = image.isEmpty ? YImage.iconStore : image;
     final bool isNetwork =
         isNetworkImage ||
-        image.startsWith('http://') ||
-        image.startsWith('https://');
+        fallbackImage.startsWith('http://') ||
+        fallbackImage.startsWith('https://');
 
     return Container(
       width: width,
@@ -55,12 +57,16 @@ class YCircularImage extends StatelessWidget {
               ? CachedNetworkImage(
                   fit: fit,
                   color: overlayColor,
-                  imageUrl: image,
+                  imageUrl: fallbackImage,
                   progressIndicatorBuilder: (context, url, downloadProgress) =>
                       const YShimmerEffect(width: 55, height: 55),
                   errorWidget: (context, url, error) => const Icon(Icons.error),
                 )
-              : Image(fit: fit, image: AssetImage(image), color: overlayColor),
+              : Image(
+                  fit: fit,
+                  image: AssetImage(fallbackImage),
+                  color: overlayColor,
+                ),
         ),
       ),
     );

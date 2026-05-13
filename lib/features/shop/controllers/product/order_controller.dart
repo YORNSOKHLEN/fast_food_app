@@ -51,7 +51,14 @@ class OrderController extends GetxController {
 
       // Get user authentication Id
       final userId = AuthenticationRepository.instance.authUser!.uid;
-      if (userId.isEmpty) return;
+      if (userId.isEmpty) {
+        YFullScreenLoader.stopLoading();
+        YLoaders.errorSnackBar(
+          title: 'Error',
+          message: 'User not authenticated. Please login again.',
+        );
+        return;
+      }
 
       final orderItems = items ?? cartController.cartItems.toList();
 
@@ -72,14 +79,22 @@ class OrderController extends GetxController {
       // Save the order to Firestore
       await orderRepository.saveOrder(order, userId);
 
-      // If a coupon was applied, claim its usage for this order
+      // If a coupon was applied, claim its usage for this order.
+      // If claiming fails, stop checkout so the coupon cannot be reused.
       try {
-        final couponController = Get.find<CouponController>();
-        if (couponController.appliedCoupon.value != null) {
-          await couponController.claimCouponForOrder(order.id);
+        if (Get.isRegistered<CouponController>()) {
+          final couponController = Get.find<CouponController>();
+          if (couponController.appliedCoupon.value != null) {
+            await couponController.claimCouponForOrder(order.id);
+          }
         }
-      } catch (_) {
-        // ignore if coupon controller not found or claim failed (non-blocking)
+      } catch (e) {
+        YFullScreenLoader.stopLoading();
+        YLoaders.errorSnackBar(
+          title: 'Coupon Error',
+          message: e.toString(),
+        );
+        return;
       }
 
       // Update product popularity counters based on purchased quantities.
@@ -89,6 +104,9 @@ class OrderController extends GetxController {
       if (clearCartAfterOrder) {
         cartController.clearCart();
       }
+
+      // Remove loader before showing success screen
+      YFullScreenLoader.stopLoading();
 
       // Show Success screen
       Get.off(
@@ -102,6 +120,7 @@ class OrderController extends GetxController {
 
       // Additional logic like clearing cart or navigating to success screen would follow here.
     } catch (e) {
+      YFullScreenLoader.stopLoading();
       YLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
     }
   }

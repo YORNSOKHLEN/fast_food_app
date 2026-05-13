@@ -11,7 +11,7 @@ class BannerRepository extends GetxController {
   // Variables
   final _db = FirebaseFirestore.instance;
 
-  // Get all banners
+  // Get all poster
   Future<List<BannerModel>> fetchBanners() async {
     try {
       final result = await _db
@@ -28,7 +28,7 @@ class BannerRepository extends GetxController {
     } on PlatformException catch (e) {
       throw 'Platform Exception: ${e.message}';
     } catch (e) {
-      throw 'Something went wrong while fetching banners: $e';
+      throw 'Something went wrong while fetching poster: $e';
     }
   }
 

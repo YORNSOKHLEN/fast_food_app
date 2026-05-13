@@ -40,16 +40,16 @@ class CartItemModel {
   /// Create a CartItem from a JSON Map
   factory CartItemModel.fromJson(Map<String, dynamic> json) {
     return CartItemModel(
-      productId: json['productId'],
-      title: json['title'],
-      price: json['price']?.toDouble(),
-      image: json['image'],
-      quantity: json['quantity'],
-      variationId: json['variationId'],
-      brandName: json['brandName'],
+      productId: json['productId'] as String? ?? '',
+      title: json['title'] as String? ?? '',
+      price: (json['price'] as num?)?.toDouble() ?? 0.0,
+      image: json['image'] as String?,
+      quantity: json['quantity'] as int? ?? 0,
+      variationId: json['variationId'] as String? ?? '',
+      brandName: json['brandName'] as String?,
       selectedVariation: json['selectedVariation'] != null
-          ? Map<String, String>.from(json['selectedVariation'])
+          ? Map<String, String>.from(json['selectedVariation'] as Map)
           : null,
-    ); // CartItemModel
+    );
   }
 }

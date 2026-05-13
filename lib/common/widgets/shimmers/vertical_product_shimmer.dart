@@ -5,7 +5,7 @@ import '../../../utils/constants/sizes.dart';
 import '../layouts/grid_layout.dart';
 
 class YVerticalProductShimmer extends StatelessWidget {
-  const YVerticalProductShimmer({super.key, this.itemCount = 4});
+  const YVerticalProductShimmer({super.key, this.itemCount = 6});
 
   final int itemCount;
 

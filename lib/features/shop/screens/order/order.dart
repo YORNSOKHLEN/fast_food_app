@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:fast_food/common/widgets/appbar/appbar.dart';
+import 'package:fast_food/features/shop/controllers/product/order_controller.dart';
 import 'package:fast_food/features/shop/screens/order/widgets/order_list.dart';
 import 'package:fast_food/utils/constants/sizes.dart';
 
@@ -8,6 +10,7 @@ class OrderScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(OrderController());
     return Scaffold(
       // Appbar
       appBar: YAppBar(
@@ -17,11 +20,16 @@ class OrderScreen extends StatelessWidget {
           style: Theme.of(context).textTheme.headlineSmall,
         ),
       ),
-      body: Padding(
-        padding: EdgeInsets.all(YSizes.defaultSpace),
-        child:
-            // Orders
-            YOrderListItems(),
+      body: RefreshIndicator(
+        onRefresh: () async {
+          await controller.fetchUserOrders();
+        },
+        child: Padding(
+          padding: EdgeInsets.all(YSizes.defaultSpace),
+          child:
+              // Orders
+              YOrderListItems(),
+        ),
       ),
     );
   }

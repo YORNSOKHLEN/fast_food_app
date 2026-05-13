@@ -23,7 +23,7 @@ class ImagesController extends GetxController {
     selectedProductImage.value = product.thumbnail;
 
     // Get all images from the Product Model if not null.
-    if (product.images != null) {
+    if (product.images != null && product.images!.isNotEmpty) {
       images.addAll(product.images!);
     }
 

@@ -4,7 +4,6 @@ import 'package:fast_food/common/widgets/product/product_cards/product_card_vert
 import 'package:fast_food/features/shop/screens/home/widgets/home_appbar.dart';
 import 'package:fast_food/features/shop/screens/home/widgets/home_categories.dart';
 import 'package:fast_food/features/shop/screens/home/widgets/promo_slider.dart';
-import 'package:fast_food/utils/constants/image_strings.dart';
 import 'package:fast_food/utils/constants/sizes.dart';
 
 import '../../../../common/widgets/custom_shapes/containers/primary_header_container.dart';
@@ -21,9 +20,13 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final controller = Get.put(ProductController());
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
+      body: RefreshIndicator(
+        onRefresh: () async {
+          await controller.fetchAllFeaturedProducts();
+        },
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
             // Header
             YPrimaryHeaderContainer(
               child: Column(
@@ -68,13 +71,13 @@ class HomeScreen extends StatelessWidget {
                   YPromoSlider(),
                   SizedBox(height: YSizes.spaceBtwSections),
 
-                  // Popular Product
+                  // All Products
                   YSectionHeading(
-                    title: 'Popular Products',
+                    title: 'All Products',
                     onPressed: () => Get.to(
                       () => AllProductsScreen(
-                        title: 'Popular Products',
-                        futureMethod: controller.fetchAllFeaturedProducts(),
+                        title: 'All Products',
+                        futureMethod: controller.fetchRandomProducts(limit: -1),
                       ),
                     ),
                   ),
@@ -90,7 +93,8 @@ class HomeScreen extends StatelessWidget {
                 ],
               ),
             ),
-          ],
+            ],
+          ),
         ),
       ),
     );

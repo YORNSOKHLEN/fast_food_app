@@ -26,15 +26,21 @@ class UserAddressScreen extends StatelessWidget {
           style: Theme.of(context).textTheme.headlineSmall,
         ),
       ), // TAppBar
-      body: const SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.all(YSizes.defaultSpace),
-          child: Column(
-            children: [
-              YSingleAddress(selectedAddress: true),
-              YSingleAddress(selectedAddress: false),
-            ],
-          ), // Column
+      body: RefreshIndicator(
+        onRefresh: () async {
+          // Refresh addresses
+          await Future.delayed(const Duration(seconds: 1));
+        },
+        child: const SingleChildScrollView(
+          child: Padding(
+            padding: EdgeInsets.all(YSizes.defaultSpace),
+            child: Column(
+              children: [
+                YSingleAddress(selectedAddress: true),
+                YSingleAddress(selectedAddress: false),
+              ],
+            ), // Column
+          ),
         ),
       ),
     );

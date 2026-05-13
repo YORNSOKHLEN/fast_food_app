@@ -84,14 +84,19 @@ class CartScreen extends StatelessWidget {
         if (controller.cartItems.isEmpty) {
           return emptyWidget;
         } else {
-          return const SingleChildScrollView(
-            child: Padding(
-              padding: EdgeInsets.all(YSizes.defaultSpace),
-              child: Column(
-                children: [
-                  /// -- Items in Cart
-                  CartItem(),
-                ],
+          return RefreshIndicator(
+            onRefresh: () async {
+              controller.updateCart();
+            },
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.all(YSizes.defaultSpace),
+                child: Column(
+                  children: [
+                    /// -- Items in Cart
+                    CartItem(),
+                  ],
+                ),
               ),
             ),
           );

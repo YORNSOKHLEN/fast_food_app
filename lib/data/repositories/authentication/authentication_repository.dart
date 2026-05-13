@@ -30,25 +30,29 @@ class AuthenticationRepository extends GetxController {
     screenRedirect();
   }
 
-  Future<void> screenRedirect() async {
+  Future<void> screenRedirect({bool bypassEmailVerification = false}) async {
     final user = _auth.currentUser;
 
     if (user != null) {
-      if (user.emailVerified) {
+      final isSocialLogin = user.providerData.any(
+        (provider) => provider.providerId == 'google.com',
+      );
+
+      if (user.emailVerified || isSocialLogin || bypassEmailVerification) {
 
         // Initialize local storage
         YLocalStorage.init(user.uid);
         // if email is verify
-        Get.offAll(() => NavigationMenu());
+        Get.offAll(() => const NavigationMenu());
       } else {
-        Get.offAll(() => VerifyEmailScreen(email: _auth.currentUser?.email));
+        Get.offAll(() => VerifyEmailScreen(email: user.email ?? ''));
       }
     } else {
       deviceStorage.writeIfNull('IsFirstTime', true);
 
-      final isFirstTime = deviceStorage.read('IsFirstTime') as bool;
+      final isFirstTime = deviceStorage.read('IsFirstTime') as bool?;
 
-      isFirstTime
+      (isFirstTime ?? false)
           ? Get.offAll(() => const OnBoardingScreen())
           : Get.offAll(() => const LoginScreen());
     }
@@ -151,6 +155,11 @@ class AuthenticationRepository extends GetxController {
     String password,
   ) async {
     try {
+      final user = _auth.currentUser;
+      if (user == null) {
+        throw Exception('No authenticated user found');
+      }
+
       // Create credential
       AuthCredential credential = EmailAuthProvider.credential(
         email: email,
@@ -158,7 +167,7 @@ class AuthenticationRepository extends GetxController {
       );
 
       // Re-authenticate
-      await _auth.currentUser!.reauthenticateWithCredential(credential);
+      await user.reauthenticateWithCredential(credential);
     } on FirebaseAuthException catch (e) {
       throw Exception(e.message ?? 'Re-authentication failed');
     } catch (e) {
@@ -174,14 +183,18 @@ class AuthenticationRepository extends GetxController {
       // Trigger the authentication flow
       final GoogleSignInAccount? userAccount = await GoogleSignIn().signIn();
 
+      if (userAccount == null) {
+        throw Exception('Google sign-in cancelled');
+      }
+
       // Obtain the auth details from the request
-      final GoogleSignInAuthentication? googleAuth =
-          await userAccount?.authentication;
+      final GoogleSignInAuthentication googleAuth =
+          await userAccount.authentication;
 
       // Create a new credential
       final credentials = GoogleAuthProvider.credential(
-        accessToken: googleAuth?.accessToken,
-        idToken: googleAuth?.idToken,
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
       );
 
       // Once signed in, return the UserCredential
@@ -191,13 +204,8 @@ class AuthenticationRepository extends GetxController {
     } on PlatformException catch (e) {
       throw Exception(e.message ?? 'Platform error occurred');
     } catch (e) {
-      throw Exception(e.toString());
+      rethrow;
     }
-  }
-
-  /// [FacebookAuthentication] - FACEBOOK
-  Future<void> signInWithFacebook() async {
-    // TODO: Implement Facebook Sign In
   }
 
   /* ------------------ ./end Federated identity & social sign-in ----------------*/
@@ -208,6 +216,8 @@ class AuthenticationRepository extends GetxController {
     // Clear Remember Me data
     localStorage.remove('REMEMBER_ME_EMAIL');
     localStorage.remove('REMEMBER_ME_PASSWORD');
+    // Clear any pending sign-up data stored locally
+    localStorage.remove('pending_user');
     try {
       await GoogleSignIn().signOut();
       await FirebaseAuth.instance.signOut();
@@ -226,13 +236,19 @@ class AuthenticationRepository extends GetxController {
   /// [DELETE USER] - Remove user Auth and Firestore Account.
   Future<void> deleteAccount() async {
     final localStorage = GetStorage();
+    final currentUser = _auth.currentUser;
 
     // Clear Remember Me data
     localStorage.remove('REMEMBER_ME_EMAIL');
     localStorage.remove('REMEMBER_ME_PASSWORD');
+
+    if (currentUser == null) {
+      throw Exception('No authenticated user found');
+    }
+
     try {
-      await UserRepository.instance.removeUserRecord(_auth.currentUser!.uid);
-      await _auth.currentUser?.delete();
+      await UserRepository.instance.removeUserRecord(currentUser.uid);
+      await currentUser.delete();
     } on FirebaseAuthException catch (e) {
       /// Happens if recent login is required
       if (e.code == 'requires-recent-login') {

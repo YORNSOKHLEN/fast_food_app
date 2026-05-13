@@ -36,43 +36,53 @@ class FavouriteScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(YSizes.defaultSpace),
-          child: Obx(() {
-            return FutureBuilder(
-              future: controller.favoriteProducts(),
-              builder: (context, snapshot) {
-                /// Nothing Found Widget
-                final emptyWidget = YAnimationLoaderWidget(
-                  text: 'Whoops! Favorites is Empty...',
-                  animation: YImage.docerAnimation,
-                  showAction: true,
-                  actionText: 'Let\'s add some',
-                  onActionPressed: () {
-                    final navController = Get.find<NavigationController>();
-                    navController.selectedIndex.value =
-                        0; // Switch to Store tab
+      body: RefreshIndicator(
+        onRefresh: () async {
+          await controller.favoriteProducts();
+        },
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(YSizes.defaultSpace),
+            child: Obx(
+              () {
+                return FutureBuilder(
+                  future: controller.favoriteProducts(),
+                  builder: (context, snapshot) {
+                    /// Nothing Found Widget
+                    final emptyWidget = YAnimationLoaderWidget(
+                      text: 'Whoops! Favorites is Empty...',
+                      animation: YImage.docerAnimation,
+                      showAction: true,
+                      actionText: 'Let\'s add some',
+                      onActionPressed: () {
+                        final navController =
+                            Get.find<NavigationController>();
+                        navController.selectedIndex.value =
+                            0; // Switch to Store tab
+                      },
+                    );
+
+                    const loader = YVerticalProductShimmer(itemCount: 6);
+                    final widget = YCloudHelperFunctions
+                        .checkMultiRecordState(
+                      snapshot: snapshot,
+                      loader: loader,
+                      nothingFound: emptyWidget,
+                    );
+                    if (widget != null) return widget;
+
+                    final products = snapshot.data!;
+                    return YGridLayout(
+                      itemCount: products.length,
+                      itemBuilder: (_, index) => ProductCardVertical(
+                        product: products[index],
+                      ),
+                    );
                   },
                 );
-
-                const loader = YVerticalProductShimmer(itemCount: 6);
-                final widget = YCloudHelperFunctions.checkMultiRecordState(
-                  snapshot: snapshot,
-                  loader: loader,
-                  nothingFound: emptyWidget,
-                );
-                if (widget != null) return widget;
-
-                final products = snapshot.data!;
-                return YGridLayout(
-                  itemCount: products.length,
-                  itemBuilder: (_, index) =>
-                      ProductCardVertical(product: products[index]),
-                );
               },
-            );
-          }),
+            ),
+          ),
         ),
       ),
     );

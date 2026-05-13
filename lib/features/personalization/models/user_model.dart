@@ -14,6 +14,7 @@ class UserModel {
   String? profilePicture;
   String? gender;
   String? dateOfBirth;
+  String? role;
   // final Timestamp? createdAt;
   // final Timestamp? updatedAt;
 
@@ -27,15 +28,16 @@ class UserModel {
     required this.profilePicture,
     this.gender,
     this.dateOfBirth,
+    this.role = 'customer',
     // this.createdAt,
     // this.updatedAt,
   });
 
   /// Helper function to get the full name.
-  String get fullName => '$firstName $lastName';
+  String get fullName => '${firstName ?? ''} ${lastName ?? ''}'.trim();
 
   /// Helper function to format phone number.
-  String get formattedPhoneNo => YFormatter.formatPhoneNumber(phoneNumber!);
+  String get formattedPhoneNo => YFormatter.formatPhoneNumber(phoneNumber ?? '');
 
   /// Static function to split full name into first and last name.
   static List<String> nameParts(fullName) => fullName.split(" ");
@@ -63,6 +65,7 @@ class UserModel {
     profilePicture: '',
     gender: '',
     dateOfBirth: '',
+    role: 'customer',
   );
 
   Map<String, dynamic> toJson() {
@@ -75,6 +78,7 @@ class UserModel {
       'ProfilePicture': profilePicture,
       'Gender': gender,
       'DateOfBirth': dateOfBirth,
+      'Role': role ?? 'customer',
     };
   }
 
@@ -97,6 +101,7 @@ class UserModel {
         profilePicture: data['ProfilePicture'] ?? '',
         gender: data['Gender'] ?? '',
         dateOfBirth: data['DateOfBirth'] ?? '',
+        role: data['Role'] ?? 'customer',
       );
     }
 

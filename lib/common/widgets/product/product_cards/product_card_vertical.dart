@@ -30,10 +30,10 @@ class ProductCardVertical extends StatelessWidget {
       product.salePrice,
     );
     final dark = YHelperFunctions.isDarkMode(context);
-    final isOutOfStock = product.stock <= 0;
+    // Stock tracking removed; products are always available
 
     return GestureDetector(
-      onTap: isOutOfStock ? null : () => Get.to(() => ProductDetailScreen(product: product)),
+      onTap: () => Get.to(() => ProductDetailScreen(product: product)),
       child: Container(
         width: 180,
         padding: EdgeInsets.all(YSizes.xs),
@@ -71,19 +71,10 @@ class ProductCardVertical extends StatelessWidget {
                     ),
                   ),
 
-                  // Overlay for out of stock
-                  if (isOutOfStock)
-                    Positioned.fill(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(YSizes.md),
-                          color: Colors.black.withValues(alpha: 0.4),
-                        ),
-                      ),
-                    ),
+                  // No out-of-stock overlay (stock removed)
 
                   // Discount badge - show only when product has a discount
-                  if (salePercentage != null && int.tryParse(salePercentage) != null && int.parse(salePercentage) > 0 && !isOutOfStock)
+                  if (salePercentage != null && int.tryParse(salePercentage) != null && int.parse(salePercentage) > 0)
                     Positioned(
                       top: 12,
                       left: 12,
@@ -105,31 +96,7 @@ class ProductCardVertical extends StatelessWidget {
                     ),
 
 
-                  // Stock status badge
-                  if (isOutOfStock)
-                    Positioned(
-                      bottom: 0,
-                      left: 0,
-                      right: 0,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: YColors.error.withValues(alpha: 0.9),
-                          borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(YSizes.md),
-                            bottomRight: Radius.circular(YSizes.md),
-                          ),
-                        ),
-                        padding: EdgeInsets.symmetric(vertical: 6),
-                        child: Text(
-                          'Out of Stock',
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.labelSmall!.apply(
-                            color: YColors.white,
-                            fontWeightDelta: 1,
-                          ),
-                        ),
-                      ),
-                    ),
+                  // Stock status removed
 
                   // Favourite/Wishlist Button with GetX reactive state
                   Positioned(
@@ -181,7 +148,7 @@ class ProductCardVertical extends StatelessWidget {
                           children: [
                             // Original price with strikethrough if on sale
                             if (product.productType ==
-                                    ProductType.single.toString() &&
+                                    ProductType.single.name &&
                                 product.salePrice > 0)
                               Text(
                                 '\$${product.price.toStringAsFixed(2)}',

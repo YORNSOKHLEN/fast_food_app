@@ -1,9 +1,9 @@
 import 'package:get/get.dart';
 import 'package:fast_food/data/dummy/dummy_data.dart';
-import 'package:fast_food/data/repositories/banners/banner_repository.dart';
 import 'package:fast_food/data/repositories/brand/brand_repository.dart';
 import 'package:fast_food/data/repositories/category/category_repository.dart';
 import 'package:fast_food/data/repositories/product/product_repository.dart';
+import 'package:fast_food/data/repositories/posters/poster_repository.dart';
 import 'package:fast_food/utils/constants/image_strings.dart';
 import 'package:fast_food/utils/popups/full_screen_loader.dart';
 import 'package:fast_food/utils/popups/loaders.dart';
@@ -25,17 +25,7 @@ class DataUploadService extends GetxService {
       final categoryRepo = Get.put(CategoryRepository());
       final brandRepo = Get.put(BrandRepository());
       final productRepo = Get.put(ProductRepository());
-      final bannerRepo = Get.put(BannerRepository());
-      // final brandCategoryRepo = Get.put(BrandCategoryRepository());
-      // final productCategoryRepo = Get.put(ProductCategoryRepository());
-
-      // Upload Brand Categories first
-      // YFullScreenLoader.updateMessage('Uploading brand categories...');
-      // await brandCategoryRepo.uploadDummyData(YDummyData.brandCategories);
-      //
-      // // Upload Product Categories first
-      // YFullScreenLoader.updateMessage('Uploading product categories...');
-      // await productCategoryRepo.uploadDummyData(YDummyData.productCategories);
+      final posterRepo = Get.put(PosterRepository());
 
       // Upload Categories first
       YFullScreenLoader.updateMessage('Uploading categories...');
@@ -45,13 +35,14 @@ class DataUploadService extends GetxService {
       YFullScreenLoader.updateMessage('Uploading brands...');
       await brandRepo.uploadDummyData(YDummyData.brands);
 
+      // Upload Posters
+      YFullScreenLoader.updateMessage('Uploading posters...');
+      await posterRepo.uploadDummyData(YDummyData.posters);
+
       // Upload Products
       YFullScreenLoader.updateMessage('Uploading products...');
       await productRepo.uploadDummyData(YDummyData.products);
 
-      // Upload Banners
-      YFullScreenLoader.updateMessage('Uploading banners...');
-      await bannerRepo.uploadDummyData(YDummyData.banners);
 
       // Success
       YLoaders.successSnackBar(
@@ -108,45 +99,45 @@ class DataUploadService extends GetxService {
     }
   }
 
-  /// Upload only Brands
-  Future<void> uploadBrands() async {
-    try {
-      YFullScreenLoader.openLoadingDialog(
-        'Uploading brands...',
-        YImage.docerAnimation,
-      );
-      final brandRepo = Get.find<BrandRepository>();
-      await brandRepo.uploadDummyData(YDummyData.brands);
+   /// Upload only Brands
+   Future<void> uploadBrands() async {
+     try {
+       YFullScreenLoader.openLoadingDialog(
+         'Uploading brands...',
+         YImage.docerAnimation,
+       );
+       final brandRepo = Get.find<BrandRepository>();
+       await brandRepo.uploadDummyData(YDummyData.brands);
 
-      YLoaders.successSnackBar(
-        title: 'Success!',
-        message: 'Brands uploaded successfully.',
-      );
-    } catch (e) {
-      YLoaders.errorSnackBar(title: 'Upload Failed', message: e.toString());
-    } finally {
-      YFullScreenLoader.stopLoading();
-    }
-  }
+       YLoaders.successSnackBar(
+         title: 'Success!',
+         message: 'Brands uploaded successfully.',
+       );
+     } catch (e) {
+       YLoaders.errorSnackBar(title: 'Upload Failed', message: e.toString());
+     } finally {
+       YFullScreenLoader.stopLoading();
+     }
+   }
 
-  /// Upload only Banners
-  Future<void> uploadBanners() async {
-    try {
-      YFullScreenLoader.openLoadingDialog(
-        'Uploading banners...',
-        YImage.docerAnimation,
-      );
-      final bannerRepo = Get.find<BannerRepository>();
-      await bannerRepo.uploadDummyData(YDummyData.banners);
+   /// Upload only Posters
+   Future<void> uploadPosters() async {
+     try {
+       YFullScreenLoader.openLoadingDialog(
+         'Uploading posters...',
+         YImage.docerAnimation,
+       );
+       final posterRepo = Get.find<PosterRepository>();
+       await posterRepo.uploadDummyData(YDummyData.posters);
 
-      YLoaders.successSnackBar(
-        title: 'Success!',
-        message: 'Banners uploaded successfully.',
-      );
-    } catch (e) {
-      YLoaders.errorSnackBar(title: 'Upload Failed', message: e.toString());
-    } finally {
-      YFullScreenLoader.stopLoading();
-    }
-  }
-}
+       YLoaders.successSnackBar(
+         title: 'Success!',
+         message: 'Posters uploaded successfully.',
+       );
+     } catch (e) {
+       YLoaders.errorSnackBar(title: 'Upload Failed', message: e.toString());
+     } finally {
+       YFullScreenLoader.stopLoading();
+     }
+   }
+ }

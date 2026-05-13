@@ -9,7 +9,7 @@ class CouponRepository extends GetxController {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
   /// Fetch active coupons for display.
-  Future<List<CouponModel>> fetchActiveCoupons() async {
+  Future<List<CouponModel>> fetchActiveCoupons({bool includeTargetedCoupons = false}) async {
     try {
       final snapshot = await _db
           .collection('Coupons')
@@ -22,7 +22,8 @@ class CouponRepository extends GetxController {
             final now = DateTime.now();
             final startsOk = coupon.startsAt == null || !now.isBefore(coupon.startsAt!);
             final expiresOk = coupon.expiresAt == null || !now.isAfter(coupon.expiresAt!);
-            return startsOk && expiresOk;
+            final isForAllUsers = coupon.targetUserId == null || coupon.targetUserId!.isEmpty;
+            return startsOk && expiresOk && (includeTargetedCoupons || isForAllUsers);
           })
           .toList();
 
@@ -35,7 +36,7 @@ class CouponRepository extends GetxController {
   /// Fetch active coupons that the given user has not used yet.
   Future<List<CouponModel>> fetchActiveCouponsForUser(String userId) async {
     try {
-      final activeCouponsFuture = fetchActiveCoupons();
+      final activeCouponsFuture = fetchActiveCoupons(includeTargetedCoupons: true);
       final usedCouponsFuture = _db
           .collection('CouponUsages')
           .where('userId', isEqualTo: userId)
@@ -51,7 +52,10 @@ class CouponRepository extends GetxController {
           .toSet();
 
       return activeCoupons
-          .where((coupon) => !usedCouponIds.contains(coupon.id))
+          .where((coupon) {
+            final canUse = coupon.targetUserId == null || coupon.targetUserId == userId;
+            return canUse && !usedCouponIds.contains(coupon.id);
+          })
           .toList();
     } catch (e) {
       rethrow;
@@ -59,7 +63,10 @@ class CouponRepository extends GetxController {
   }
 
   /// Fetch coupon document by code (case-insensitive match)
-  Future<CouponModel?> fetchCouponByCode(String code) async {
+  Future<CouponModel?> fetchCouponByCode(
+    String code, {
+    String? userId,
+  }) async {
     try {
       final normalized = code.trim().toUpperCase();
       final query = await _db
@@ -70,7 +77,10 @@ class CouponRepository extends GetxController {
 
       if (query.docs.isEmpty) return null;
       final doc = query.docs.first;
-      return CouponModel.fromMap(doc.id, doc.data());
+      final coupon = CouponModel.fromMap(doc.id, doc.data());
+      final isForAllUsers = coupon.targetUserId == null || coupon.targetUserId!.isEmpty;
+      if (!isForAllUsers && coupon.targetUserId != userId) return null;
+      return coupon;
     } catch (e) {
       rethrow;
     }
@@ -83,13 +93,31 @@ class CouponRepository extends GetxController {
     required String orderId,
   }) async {
     final couponRef = _db.collection('Coupons').doc(couponId);
-    final usagesRef = _db.collection('CouponUsages').doc();
+    final usagesRef = _db.collection('CouponUsages').doc('${couponId}_$userId');
+    final usageQuery = _db
+        .collection('CouponUsages')
+        .where('couponId', isEqualTo: couponId)
+        .where('userId', isEqualTo: userId);
+
+    final existingUsages = await usageQuery.get();
+    if (existingUsages.docs.isNotEmpty) {
+      throw Exception('You have already used this coupon');
+    }
 
     await _db.runTransaction((tx) async {
       final snapshot = await tx.get(couponRef);
       if (!snapshot.exists) throw Exception('Coupon not found');
 
+      final existingUsage = await tx.get(usagesRef);
+      if (existingUsage.exists) {
+        throw Exception('You have already used this coupon');
+      }
+
       final data = snapshot.data()!;
+      final targetUserId = (data['targetUserId'] ?? '').toString().trim();
+      if (targetUserId.isNotEmpty && targetUserId != userId) {
+        throw Exception('This coupon is not available for your account');
+      }
       final maxUses = data['maxUses'] as int?;
       final usageCount = (data['usageCount'] ?? 0) as int;
 
@@ -127,6 +155,7 @@ class CouponRepository extends GetxController {
       if (data.containsKey('code')) {
         data['code'] = (data['code'] as String).trim().toUpperCase();
       }
+      data['perUserLimit'] = data['perUserLimit'] ?? 1;
       data['createdAt'] = FieldValue.serverTimestamp();
       data['usageCount'] = 0;
       // Ensure active flag

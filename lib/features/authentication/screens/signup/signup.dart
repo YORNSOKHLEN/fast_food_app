@@ -12,16 +12,29 @@ class SignupScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(YSizes.defaultSpace),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Title
+              // Title section
               Text(
                 YText.signupTitle,
-                style: Theme.of(context).textTheme.headlineMedium,
+                style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+              ),
+              const SizedBox(height: YSizes.sm),
+              Text(
+                'Create your account to get started',
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                      color: Colors.grey,
+                    ),
               ),
               const SizedBox(height: YSizes.spaceBtwSections),
 
@@ -33,8 +46,9 @@ class SignupScreen extends StatelessWidget {
               FormDivider(dividerText: YText.orSignUpWith.capitalize!),
               const SizedBox(height: YSizes.spaceBtwSections),
 
-              // Social Button
-              SocialButton(),
+              // Social Buttons
+              const SocialButton(),
+              const SizedBox(height: YSizes.spaceBtwSections),
             ],
           ),
         ),

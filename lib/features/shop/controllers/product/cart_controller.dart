@@ -40,16 +40,7 @@ class CartController extends GetxController {
       return;
     }
 
-    final stock = product.stock;
-    final alreadyInCart = getProductQuantityInCart(product.id);
-
-    if (alreadyInCart + productQuantityInCart.value > stock) {
-      YLoaders.warningSnackBar(
-        title: 'Stock limit',
-        message: 'Only $stock items available.',
-      );
-      return;
-    }
+    // proceed without stock limits
 
     final cartItem = convertToCartItem(product, productQuantityInCart.value);
 
@@ -71,14 +62,7 @@ class CartController extends GetxController {
 
   /// QUICK ADD ONE ITEM FROM PRODUCT CARD
   void addOneFromCard(ProductModel product) {
-    final alreadyInCart = getProductQuantityInCart(product.id);
-    if (alreadyInCart >= product.stock) {
-      YLoaders.warningSnackBar(
-        title: 'Stock limit',
-        message: 'Only ${product.stock} items available.',
-      );
-      return;
-    }
+    // proceed without stock limits
 
     final cartItem = convertToCartItem(product, 1);
     final index = cartItems.indexWhere(

@@ -40,9 +40,9 @@ class YTermsAndConditionsCheckbox extends StatelessWidget {
                 TextSpan(
                   text: '${YText.privacyPolicy} ',
                   style: Theme.of(context).textTheme.bodyMedium!.apply(
-                    color: dark ? YColors.light : YColors.primary,
+                    color: dark ? YColors.light : YColors.buttonPrimary,
                     decoration: TextDecoration.underline,
-                    decorationColor: dark ? YColors.light : YColors.primary,
+                    decorationColor: dark ? YColors.light : YColors.buttonPrimary,
                   ),
                 ),
                 TextSpan(
@@ -52,9 +52,9 @@ class YTermsAndConditionsCheckbox extends StatelessWidget {
                 TextSpan(
                   text: '${YText.termsOfUse} ',
                   style: Theme.of(context).textTheme.bodyMedium!.apply(
-                    color: dark ? YColors.light : YColors.primary,
+                    color: dark ? YColors.light : YColors.buttonPrimary,
                     decoration: TextDecoration.underline,
-                    decorationColor: dark ? YColors.light : YColors.primary,
+                    decorationColor: dark ? YColors.light : YColors.buttonPrimary,
                   ),
                 ),
               ],

@@ -7,14 +7,14 @@ import '../../../../../common/widgets/images/rounded_image.dart';
 import '../../../../../common/widgets/shimmers/shimmer.dart';
 import '../../../../../utils/constants/colors.dart';
 import '../../../../../utils/constants/sizes.dart';
-import '../../../controllers/banner_controller.dart';
+import '../../../controllers/poster_controller.dart';
 
 class YPromoSlider extends StatelessWidget {
   const YPromoSlider({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(BannerController());
+    final controller = Get.put(PosterController());
     return Obx(() {
       // Loader
       if (controller.isLoading.value) {
@@ -22,8 +22,8 @@ class YPromoSlider extends StatelessWidget {
       }
 
       // No data found
-      if (controller.banners.isEmpty) {
-        return const Center(child: Text('No Data Found!'));
+      if (controller.posters.isEmpty) {
+        return const Center(child: Text('No Posters Available'));
       } else {
         return Column(
           children: [
@@ -33,12 +33,13 @@ class YPromoSlider extends StatelessWidget {
                 onPageChanged: (index, _) =>
                     controller.updatePageIndicator(index),
               ),
-              items: controller.banners
+              items: controller.posters
                   .map(
-                    (banner) => YRoundedImage(
-                      imageUrl: banner.imageUrl,
-                      isNetworkImage: true,
-                      onPressed: () => Get.toNamed(banner.targetScreen),
+                    (poster) => YRoundedImage(
+                      imageUrl: poster.imageUrl,
+                      // Let YRoundedImage auto-detect network vs asset by default.
+                      // If you need to force network, pass isNetworkImage: true when necessary.
+                      onPressed: () {},
                     ),
                   )
                   .toList(),
@@ -49,7 +50,7 @@ class YPromoSlider extends StatelessWidget {
                 () => Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    for (int i = 0; i < controller.banners.length; i++)
+                    for (int i = 0; i < controller.posters.length; i++)
                       YCircularContainer(
                         height: 4,
                         width: 20,

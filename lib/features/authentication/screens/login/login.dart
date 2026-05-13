@@ -20,18 +20,22 @@ class LoginScreen extends StatelessWidget {
           padding: YSpacingStyle.paddingWithAppBarHeight,
           child: Column(
             children: [
-              // Login and Title
+              // Login Header with Logo
+              const SizedBox(height: YSizes.spaceBtwSections),
               LoginHeader(),
+              const SizedBox(height: YSizes.spaceBtwSections),
 
               // Form
               LoginForm(),
+              const SizedBox(height: YSizes.spaceBtwSections),
 
               // Divider
               FormDivider(dividerText: YText.orSignInWith.capitalize!),
               const SizedBox(height: YSizes.spaceBtwSections),
 
-              // Footer
-              SocialButton(),
+              // Social Buttons
+              const SocialButton(),
+              const SizedBox(height: YSizes.spaceBtwSections),
             ],
           ),
         ),

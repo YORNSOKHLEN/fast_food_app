@@ -24,9 +24,10 @@ class VariationController extends GetxController {
 
   /// -- Check Product Variation Stock Status
   void getProductVariationStockStatus() {
-    variationStockStatus.value = selectedVariation.value.stock > 0
-        ? 'In Stock'
-        : 'Out of Stock';
+    // Stock is no longer tracked; consider a variation available if it has an id
+    variationStockStatus.value = selectedVariation.value.id.isNotEmpty
+        ? 'Available'
+        : '';
   }
 
   /// -- Reset Selected Attributes when switching products

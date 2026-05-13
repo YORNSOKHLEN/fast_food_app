@@ -16,6 +16,10 @@ class YImage {
   static const String onBoardingImage3 =
       'assets/images/on_boarding_images/delivery.png';
 
+  // Poster images
+  static const String poster1 = 'assets/images/poster/burger_promo.png';
+  static const String poster2 = 'assets/images/poster/pizza_promo.png';
+
   // Verify Email
   static const String staticSuccessIllustration =
       "assets/images/verify_email/success_email.png";
@@ -35,16 +39,8 @@ class YImage {
 
   /// Brand
   static const String burgerKingBrand = "assets/logos/burger_king.png";
-
-  /// Banner
-  static const String banner1 = "assets/images/banners/burger_promo.png";
-  static const String banner2 = "assets/images/banners/pizza_promo.png";
-  static const String banner3 = "";
-  static const String banner4 = "";
-  static const String banner5 = "";
-  static const String banner6 = "";
-  static const String banner7 = "";
-  static const String banner8 = "";
+  static const String pizzaHutBrand = "assets/logos/pizza_hut.png";
+  static const String koiBrand = "assets/logos/koi.png";
 
   /// Product Review
   static const String userReview1 = "assets/images/reviews/user_review1.png";

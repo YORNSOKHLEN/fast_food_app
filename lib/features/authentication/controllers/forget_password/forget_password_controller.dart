@@ -18,6 +18,11 @@ class ForgetPasswordController extends GetxController {
   /// Send Reset Password EMail
   Future<void> sendPasswordResetEmail() async {
     try {
+      // Form Validation first
+      if (!forgetPasswordFormKey.currentState!.validate()) {
+        return;
+      }
+
       // Start Loading
       YFullScreenLoader.openLoadingDialog(
         'Processing your request...',
@@ -28,12 +33,10 @@ class ForgetPasswordController extends GetxController {
       final isConnected = await NetworkManager.instance.isConnected();
       if (!isConnected) {
         YFullScreenLoader.stopLoading();
-        return;
-      }
-
-      // Form Validation
-      if (!forgetPasswordFormKey.currentState!.validate()) {
-        YFullScreenLoader.stopLoading();
+        YLoaders.errorSnackBar(
+          title: 'No Internet',
+          message: 'Please check your internet connection.',
+        );
         return;
       }
 
@@ -42,14 +45,14 @@ class ForgetPasswordController extends GetxController {
         email.text.trim(),
       );
 
+      // Remove Loader
+      YFullScreenLoader.stopLoading();
+
       // Show Success Screen
       YLoaders.successSnackBar(
         title: 'Email sent',
         message: 'Email Link Sent to Reset your Password'.tr,
       );
-
-      // Remove Loader
-      YFullScreenLoader.stopLoading();
 
       // Redirect
       Get.to(() => ResetPasswordScreen(email: email.text.trim()));
@@ -59,7 +62,7 @@ class ForgetPasswordController extends GetxController {
     }
   }
 
-  Future<void> resendPasswordResetEmail(String email) async {
+  Future<void> resendPasswordResetEmail(String emailAddress) async {
     try {
       // Start Loading
       YFullScreenLoader.openLoadingDialog(
@@ -71,14 +74,15 @@ class ForgetPasswordController extends GetxController {
       final isConnected = await NetworkManager.instance.isConnected();
       if (!isConnected) {
         YFullScreenLoader.stopLoading();
+        YLoaders.errorSnackBar(
+          title: 'No Internet',
+          message: 'Please check your internet connection.',
+        );
         return;
       }
 
-      // Form Validation
-      if (!forgetPasswordFormKey.currentState!.validate()) {
-        YFullScreenLoader.stopLoading();
-        return;
-      }
+      // Send Email to Reset Password
+      await AuthenticationRepository.instance.sendPasswordResetEmail(emailAddress);
 
       // Remove Loader
       YFullScreenLoader.stopLoading();

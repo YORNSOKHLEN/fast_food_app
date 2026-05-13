@@ -27,12 +27,17 @@ class UpdateNameController extends GetxController {
 
   /// Fetch user record
   Future<void> initializeNames() async {
-    firstName.text = userController.user.value.firstName!;
-    lastName.text = userController.user.value.lastName!;
+    firstName.text = userController.user.value.firstName ?? '';
+    lastName.text = userController.user.value.lastName ?? '';
   }
 
   Future<void> updateUserName() async {
     try {
+      // Form Validation first
+      if (!updateUserNameFormKey.currentState!.validate()) {
+        return;
+      }
+
       // Start Loading
       YFullScreenLoader.openLoadingDialog(
         'We are updating your information...',
@@ -43,12 +48,10 @@ class UpdateNameController extends GetxController {
       final isConnected = await NetworkManager.instance.isConnected();
       if (!isConnected) {
         YFullScreenLoader.stopLoading();
-        return;
-      }
-
-      // Form Validation
-      if (!updateUserNameFormKey.currentState!.validate()) {
-        YFullScreenLoader.stopLoading();
+        YLoaders.errorSnackBar(
+          title: 'No Internet',
+          message: 'Please check your internet connection.',
+        );
         return;
       }
 

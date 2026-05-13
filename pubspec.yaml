@@ -48,8 +48,6 @@ dependencies:
 
   # Google Map
   google_maps_flutter: ^2.3.0
-  geolocator: ^9.0.2
-  geocoding: ^2.0.5
 
 
 
@@ -70,7 +68,7 @@ flutter:
     - assets/logos/
     - assets/images/
     - assets/images/user/
-    - assets/images/banners/
+    - assets/images/poster/
     - assets/images/reviews/
     - assets/images/products/
     - assets/icons/categories/

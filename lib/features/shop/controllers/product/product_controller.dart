@@ -10,6 +10,7 @@ class ProductController extends GetxController {
   final isLoading = false.obs;
   final productRepository = Get.put(ProductRepository());
   RxList<ProductModel> featuredProducts = <ProductModel>[].obs;
+  RxList<ProductModel> randomProducts = <ProductModel>[].obs;
   RxList<ProductModel> allProducts = <ProductModel>[].obs;
   RxList<ProductModel> categoryProducts = <ProductModel>[].obs;
   RxList<ProductModel> brandProducts = <ProductModel>[].obs;
@@ -18,6 +19,7 @@ class ProductController extends GetxController {
   @override
   void onInit() {
     fetchFeaturedProducts();
+    loadRandomProducts(limit: 100);
     super.onInit();
   }
 
@@ -63,6 +65,18 @@ class ProductController extends GetxController {
     } catch (e) {
       YLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
       return [];
+    }
+  }
+
+  Future<void> loadRandomProducts({int limit = 8}) async {
+    try {
+      isLoading.value = true;
+      final products = await productRepository.getRandomProducts(limit: limit);
+      randomProducts.assignAll(products);
+    } catch (e) {
+      YLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
+    } finally {
+      isLoading.value = false;
     }
   }
 

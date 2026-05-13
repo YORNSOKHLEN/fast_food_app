@@ -2,7 +2,6 @@ import 'package:get/get.dart';
 import 'package:fast_food/features/shop/controllers/product/checkout_controller.dart';
 
 import '../data/repositories/authentication/authentication_repository.dart';
-import '../data/repositories/banners/banner_repository.dart';
 import '../data/repositories/brand/brand_repository.dart';
 import '../data/repositories/category/category_repository.dart';
 import '../data/repositories/review/review_repository.dart';
@@ -28,7 +27,6 @@ class GeneralBindings extends Bindings {
     Get.lazyPut<BrandRepository>(() => BrandRepository(), fenix: true);
     Get.lazyPut<ProductRepository>(() => ProductRepository(), fenix: true);
     Get.lazyPut<ReviewRepository>(() => ReviewRepository(), fenix: true);
-    Get.lazyPut<BannerRepository>(() => BannerRepository(), fenix: true);
 
     /// Services ADD THIS
     Get.lazyPut<DataUploadService>(() => DataUploadService(), fenix: true);

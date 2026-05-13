@@ -183,6 +183,16 @@ class CouponListScreen extends StatelessWidget {
                           _infoChip(context: context, icon: Icons.schedule_outlined, label: _formatExpiry(coupon.expiresAt)),
                           _infoChip(
                             context: context,
+                            icon: Icons.people_outline,
+                            label: coupon.targetUserId == null ? 'All users' : 'User: ${coupon.targetUserId}',
+                          ),
+                          _infoChip(
+                            context: context,
+                            icon: Icons.category_outlined,
+                            label: coupon.targetProductId == null ? 'All products' : 'Product: ${coupon.targetProductId}',
+                          ),
+                          _infoChip(
+                            context: context,
                             icon: Icons.percent_outlined,
                             label: 'Usage: ${coupon.usageCount}${coupon.maxUses != null ? ' / ${coupon.maxUses}' : ''}',
                           ),

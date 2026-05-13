@@ -49,8 +49,9 @@ class YFullScreenLoader {
   }
 
   static stopLoading() {
-    Navigator.of(
-      Get.overlayContext!,
-    ).pop(); // Close the dialog using the Navigator
+    final context = Get.overlayContext;
+    if (context != null && Navigator.of(context).canPop()) {
+      Navigator.of(context).pop(); // Close the dialog using the Navigator
+    }
   }
 }

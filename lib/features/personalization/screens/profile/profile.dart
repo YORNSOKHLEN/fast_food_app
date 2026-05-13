@@ -30,11 +30,15 @@ class ProfileScreen extends StatelessWidget {
     return Scaffold(
       appBar: YAppBar(showBackArrow: true, title: const Text('Profile')),
       body: Obx(
-        () => SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(YSizes.defaultSpace),
-            child: Column(
-              children: [
+        () => RefreshIndicator(
+          onRefresh: () async {
+            await controller.fetchUserRecord();
+          },
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(YSizes.defaultSpace),
+              child: Column(
+                children: [
               /// Profile Picture
               SizedBox(
                 width: double.infinity,
@@ -196,8 +200,9 @@ class ProfileScreen extends StatelessWidget {
                     style: TextStyle(color: Colors.red),
                   ),
                 ),
+                ),
+                ],
               ),
-              ],
             ),
           ),
         ),

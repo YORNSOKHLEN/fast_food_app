@@ -18,6 +18,7 @@ class SignupForm extends StatelessWidget {
       key: controller.signupFormKey,
       child: Column(
         children: [
+          // First Name and Last Name Fields
           Row(
             children: [
               Expanded(
@@ -28,7 +29,10 @@ class SignupForm extends StatelessWidget {
                   expands: false,
                   decoration: InputDecoration(
                     labelText: YText.firstName,
-                    prefixIcon: Icon(Iconsax.user),
+                    prefixIcon: const Icon(Iconsax.user),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
                 ),
               ),
@@ -41,7 +45,10 @@ class SignupForm extends StatelessWidget {
                   expands: false,
                   decoration: InputDecoration(
                     labelText: YText.lastName,
-                    prefixIcon: Icon(Iconsax.user),
+                    prefixIcon: const Icon(Iconsax.user),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
                 ),
               ),
@@ -57,7 +64,10 @@ class SignupForm extends StatelessWidget {
             expands: false,
             decoration: InputDecoration(
               labelText: YText.username,
-              prefixIcon: Icon(Iconsax.user_edit),
+              prefixIcon: const Icon(Iconsax.user_edit),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
             ),
           ),
           const SizedBox(height: YSizes.spaceBtwInputField),
@@ -68,7 +78,10 @@ class SignupForm extends StatelessWidget {
             validator: (value) => YValidator.validateEmail(value),
             decoration: InputDecoration(
               labelText: YText.email,
-              prefixIcon: Icon(Iconsax.direct),
+              prefixIcon: const Icon(Iconsax.direct),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
             ),
           ),
           const SizedBox(height: YSizes.spaceBtwInputField),
@@ -79,7 +92,10 @@ class SignupForm extends StatelessWidget {
             validator: (value) => YValidator.validatePhoneNumber(value),
             decoration: InputDecoration(
               labelText: YText.phoneNo,
-              prefixIcon: Icon(Iconsax.call),
+              prefixIcon: const Icon(Iconsax.call),
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
             ),
           ),
           const SizedBox(height: YSizes.spaceBtwInputField),
@@ -92,7 +108,7 @@ class SignupForm extends StatelessWidget {
               obscureText: controller.hidePassword.value,
               decoration: InputDecoration(
                 labelText: YText.password,
-                prefixIcon: Icon(Iconsax.password_check),
+                prefixIcon: const Icon(Iconsax.password_check),
                 suffixIcon: IconButton(
                   onPressed: () => controller.hidePassword.value =
                       !controller.hidePassword.value,
@@ -101,6 +117,9 @@ class SignupForm extends StatelessWidget {
                         ? Iconsax.eye_slash
                         : Iconsax.eye,
                   ),
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
                 ),
               ),
             );
@@ -116,7 +135,18 @@ class SignupForm extends StatelessWidget {
             width: double.infinity,
             child: ElevatedButton(
               onPressed: () => controller.signup(),
-              child: Text(YText.createAccount),
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              child: Text(
+                YText.createAccount,
+                style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                      color: Colors.white,
+                    ),
+              ),
             ),
           ),
         ],

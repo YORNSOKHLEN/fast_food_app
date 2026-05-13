@@ -9,6 +9,8 @@ class CouponModel {
   final DateTime? expiresAt;
   final int? maxUses;
   final int? perUserLimit;
+  final String? targetUserId; // null/empty = all users, otherwise specific user
+  final String? targetProductId; // null/empty = all products, otherwise specific product
   final bool active;
   final int usageCount;
 
@@ -23,11 +25,14 @@ class CouponModel {
     this.expiresAt,
     this.maxUses,
     this.perUserLimit,
+    this.targetUserId,
+    this.targetProductId,
     this.active = true,
     this.usageCount = 0,
   });
 
   factory CouponModel.fromMap(String id, Map<String, dynamic> data) {
+    final rawTargetUserId = (data['targetUserId'] ?? '').toString().trim();
     return CouponModel(
       id: id,
       code: (data['code'] ?? '').toString(),
@@ -47,6 +52,10 @@ class CouponModel {
           : null,
       maxUses: data['maxUses'] as int?,
       perUserLimit: data['perUserLimit'] as int?,
+      targetUserId: rawTargetUserId.isEmpty ? null : rawTargetUserId,
+      targetProductId: (data['targetProductId'] ?? '').toString().trim().isEmpty
+          ? null
+          : (data['targetProductId'] ?? '').toString().trim(),
       active: data['active'] ?? true,
       usageCount: (data['usageCount'] ?? 0) as int,
     );
@@ -62,6 +71,8 @@ class CouponModel {
         'expiresAt': expiresAt,
         'maxUses': maxUses,
         'perUserLimit': perUserLimit,
+        'targetUserId': targetUserId,
+        'targetProductId': targetProductId,
         'active': active,
         'usageCount': usageCount,
       };

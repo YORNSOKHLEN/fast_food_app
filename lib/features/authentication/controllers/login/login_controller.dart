@@ -10,13 +10,13 @@ import '../../../../utils/popups/loaders.dart';
 import '../../../personalization/controllers/user_controller.dart';
 
 class LoginController extends GetxController {
-  /// Variables
+  // Variables
   final rememberMe = false.obs;
   final hidePassword = true.obs;
   final localStorage = GetStorage();
   final email = TextEditingController();
   final password = TextEditingController();
-  GlobalKey<FormState> loginFormKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> loginFormKey = GlobalKey<FormState>();
   final userController = Get.put(UserController());
 
   @override
@@ -26,7 +26,7 @@ class LoginController extends GetxController {
     super.onInit();
   }
 
-  /// Email Password Login
+  /// Email & Password Login
   Future<void> emailAndPasswordSignIn() async {
     try {
       // Start Loading
@@ -39,6 +39,10 @@ class LoginController extends GetxController {
       final isConnected = await NetworkManager.instance.isConnected();
       if (!isConnected) {
         YFullScreenLoader.stopLoading();
+        YLoaders.errorSnackBar(
+          title: 'No Internet',
+          message: 'Please check your internet connection.',
+        );
         return;
       }
 
@@ -55,7 +59,7 @@ class LoginController extends GetxController {
       }
 
       // Login user using Email & Password Authentication
-      final userCredentials = await AuthenticationRepository.instance
+      await AuthenticationRepository.instance
           .loginWithEmailAndPassword(email.text.trim(), password.text.trim());
 
       // Remove Loader
@@ -69,7 +73,7 @@ class LoginController extends GetxController {
     }
   }
 
-  /// -- Google SignIn Authentication
+  /// Google SignIn Authentication
   Future<void> googleSignIn() async {
     try {
       // Start Loading
@@ -82,6 +86,10 @@ class LoginController extends GetxController {
       final isConnected = await NetworkManager.instance.isConnected();
       if (!isConnected) {
         YFullScreenLoader.stopLoading();
+        YLoaders.errorSnackBar(
+          title: 'No Internet',
+          message: 'Please check your internet connection.',
+        );
         return;
       }
 
@@ -92,14 +100,16 @@ class LoginController extends GetxController {
       // Save user record to Firestore
       await userController.saveUserRecord(userCredentials);
 
-      // Remove Loader
-      YFullScreenLoader.stopLoading();
-
       // Redirect
       AuthenticationRepository.instance.screenRedirect();
     } catch (e) {
+      final message = e.toString();
+      if (!message.contains('Google sign-in cancelled')) {
+        YLoaders.errorSnackBar(title: 'Oh Snap', message: message);
+      }
+    } finally {
       YFullScreenLoader.stopLoading();
-      YLoaders.errorSnackBar(title: 'Oh Snap', message: e.toString());
     }
   }
+
 }

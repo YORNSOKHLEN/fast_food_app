@@ -28,30 +28,35 @@ class AllProductsScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: const YAppBar(title: Text('All Products'), showBackArrow: true),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(YSizes.defaultSpace),
-          child: FutureBuilder(
-            future:
-                futureMethod ??
-                controller.fetchProductsByQuery(
-                  query as Query<Map<String, dynamic>>?,
-                ),
-            builder: (context, snapshot) {
-              const loader = YVerticalProductShimmer();
-              final widget = YCloudHelperFunctions.checkMultiRecordState(
-                snapshot: snapshot,
-                loader: loader,
-              );
+      body: RefreshIndicator(
+        onRefresh: () async {
+          await (futureMethod ?? controller.fetchProductsByQuery(query as Query<Map<String, dynamic>>?));
+        },
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(YSizes.defaultSpace),
+            child: FutureBuilder(
+              future:
+                  futureMethod ??
+                  controller.fetchProductsByQuery(
+                    query as Query<Map<String, dynamic>>?,
+                  ),
+              builder: (context, snapshot) {
+                const loader = YVerticalProductShimmer();
+                final widget = YCloudHelperFunctions.checkMultiRecordState(
+                  snapshot: snapshot,
+                  loader: loader,
+                );
 
-              // Return
-              if (widget != null) return widget;
+                // Return
+                if (widget != null) return widget;
 
-              // Products found!
-              final products = snapshot.data!;
+                // Products found!
+                final products = snapshot.data!;
 
-              return YSortableProducts(products: products);
-            },
+                return YSortableProducts(products: products);
+              },
+            ),
           ),
         ),
       ),

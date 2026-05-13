@@ -71,6 +71,7 @@ class UserController extends GetxController {
             email: userCredentials.user!.email ?? '',
             phoneNumber: userCredentials.user!.phoneNumber ?? '',
             profilePicture: userCredentials.user!.photoURL ?? '',
+            role: 'customer',
           );
 
           // Save user data
@@ -132,7 +133,7 @@ class UserController extends GetxController {
       }
     } catch (e) {
       YFullScreenLoader.stopLoading();
-      YLoaders.warningSnackBar(title: 'Oh Snap!', message: e.toString());
+      YLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
     }
   }
 
@@ -145,6 +146,10 @@ class UserController extends GetxController {
       final isConnected = await NetworkManager.instance.isConnected();
       if (!isConnected) {
         YFullScreenLoader.stopLoading();
+        YLoaders.errorSnackBar(
+          title: 'No Internet',
+          message: 'Please check your internet connection.',
+        );
         return;
       }
 
@@ -165,7 +170,7 @@ class UserController extends GetxController {
       Get.offAll(() => const LoginScreen());
     } catch (e) {
       YFullScreenLoader.stopLoading();
-      YLoaders.warningSnackBar(title: 'Oh Snap!', message: e.toString());
+      YLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
     }
   }
 
@@ -227,6 +232,10 @@ class UserController extends GetxController {
       final isConnected = await NetworkManager.instance.isConnected();
       if (!isConnected) {
         YFullScreenLoader.stopLoading();
+        YLoaders.errorSnackBar(
+          title: 'No Internet',
+          message: 'Please check your internet connection.',
+        );
         return;
       }
 

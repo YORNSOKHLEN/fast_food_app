@@ -24,7 +24,7 @@ class BannerController extends GetxController {
   // Fetch Banners
   Future<void> fetchBanners() async {
     try {
-      // Show loader while loading banners
+      // Show loader while loading poster
       isLoading.value = true;
 
       // Fetch Banners

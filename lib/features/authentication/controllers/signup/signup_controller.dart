@@ -4,7 +4,7 @@ import 'package:fast_food/utils/constants/image_strings.dart';
 import 'package:fast_food/utils/popups/loaders.dart';
 
 import '../../../../data/repositories/authentication/authentication_repository.dart';
-import '../../../../data/repositories/user/user_repository.dart';
+import 'package:get_storage/get_storage.dart';
 import '../../../../utils/helpers/network_manager.dart';
 import '../../../../utils/popups/full_screen_loader.dart';
 import '../../../personalization/models/user_model.dart';
@@ -29,6 +29,20 @@ class SignupController extends GetxController {
   // // SignUp
   void signup() async {
     try {
+      // Validate form first before showing loader
+      if (!signupFormKey.currentState!.validate()) {
+        return;
+      }
+
+      // Privacy Policy validation
+      if (!privacyPolicy.value) {
+        YLoaders.warningSnackBar(
+          title: 'Accept Privacy Policy',
+          message: 'You must accept the Privacy Policy & Terms of Use.',
+        );
+        return;
+      }
+
       YFullScreenLoader.openLoadingDialog(
         'We are processing your information...',
         YImage.docerAnimation,
@@ -38,21 +52,9 @@ class SignupController extends GetxController {
       final isConnected = await NetworkManager.instance.isConnected();
       if (!isConnected) {
         YFullScreenLoader.stopLoading();
-        return;
-      }
-
-      // Form Validation
-      if (!signupFormKey.currentState!.validate()) {
-        YFullScreenLoader.stopLoading();
-        return;
-      }
-
-      // Privacy Policy
-      if (!privacyPolicy.value) {
-        YFullScreenLoader.stopLoading();
-        YLoaders.warningSnackBar(
-          title: 'Accept Privacy Policy',
-          message: 'You must accept the Privacy Policy & Terms of Use.',
+        YLoaders.errorSnackBar(
+          title: 'No Internet',
+          message: 'Please check your internet connection.',
         );
         return;
       }
@@ -74,10 +76,15 @@ class SignupController extends GetxController {
         email: email.text.trim(),
         phoneNumber: phoneNumber.text.trim(),
         profilePicture: '',
+        role: 'customer',
       );
 
-      final userRepository = Get.put(UserRepository());
-      await userRepository.saveUserRecord(newUser);
+      // Persist the user profile locally until email is verified.
+      final storage = GetStorage();
+      final pending = newUser.toJson();
+      // Ensure the user id is included
+      pending['id'] = userCredential.user!.uid;
+      await storage.write('pending_user', pending);
 
       // STOP loader BEFORE navigation
       YFullScreenLoader.stopLoading();

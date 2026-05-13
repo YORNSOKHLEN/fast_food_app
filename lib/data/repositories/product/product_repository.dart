@@ -124,9 +124,12 @@ class ProductRepository extends GetxController {
                 .limit(limit)
                 .get();
 
-      return productsQuery.docs
+      final products = productsQuery.docs
           .map((doc) => ProductModel.fromSnapshot(doc))
           .toList();
+
+      products.sort((a, b) => b.orderCount.compareTo(a.orderCount));
+      return products;
     } catch (e) {
       debugPrint('getProductsForCategory error: $e');
       return [];
@@ -283,6 +286,19 @@ class ProductRepository extends GetxController {
       }
     } catch (e) {
       rethrow;
+    }
+  }
+
+  /// Save a single product to Firestore (used for admin uploads)
+  Future<void> saveProduct(ProductModel product) async {
+    try {
+      await _db.collection('Products').doc(product.id).set(product.toJson());
+    } on FirebaseException catch (e) {
+      throw Exception(e.message ?? 'Firebase error when saving product');
+    } on PlatformException catch (e) {
+      throw Exception(e.message ?? 'Platform error when saving product');
+    } catch (e) {
+      throw Exception('Something went wrong. Please try again');
     }
   }
 }
