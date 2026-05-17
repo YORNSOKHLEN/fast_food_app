@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:fast_food/features/shop/controllers/product/cart_controller.dart';
 import 'package:fast_food/features/shop/screens/checkout/widgets/billing_amount_section.dart';
 import 'package:fast_food/features/shop/screens/checkout/widgets/billing_payment_section.dart';
+import 'package:fast_food/features/shop/screens/checkout/widgets/billing_address_section.dart';
 
 import '../../../../common/widgets/appbar/appbar.dart';
 import '../../../../common/widgets/custom_shapes/containers/rounded_container.dart';
@@ -79,6 +80,10 @@ class CheckoutScreen extends StatelessWidget {
 
               /// -- Coupon TextField
               YCouponCode(),
+              const SizedBox(height: YSizes.spaceBtwSections),
+
+              /// -- Billing Address Section (with Phone Number and Map Picker)
+              YBillingAddressSection(),
               const SizedBox(height: YSizes.spaceBtwSections),
 
               /// -- Billing Section

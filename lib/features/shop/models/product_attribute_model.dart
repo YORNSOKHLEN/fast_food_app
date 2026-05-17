@@ -1,7 +1,3 @@
-import 'package:fast_food/features/shop/models/product_model.dart';
-import 'package:fast_food/features/shop/models/product_variation_model.dart';
-
-import '../../../utils/constants/image_strings.dart';
 
 class ProductAttributeModel {
   String? name;

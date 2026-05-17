@@ -5,7 +5,6 @@ import 'package:fast_food/common/widgets/product/favourite_icon/favourite_icon.d
 
 import '../../../../../common/widgets/appbar/appbar.dart';
 import '../../../../../common/widgets/custom_shapes/curved_edges/curved_edges_widgets.dart';
-import '../../../../../common/widgets/images/rounded_image.dart';
 import '../../../../../features/shop/models/product_model.dart';
 import '../../../../../utils/constants/colors.dart';
 import '../../../../../utils/constants/sizes.dart';

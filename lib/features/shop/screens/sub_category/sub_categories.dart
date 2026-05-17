@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 
 import '../../../../common/widgets/appbar/appbar.dart';
 import '../../../../common/widgets/image_text_widgets/vertical_image_text.dart';
-import '../../../../common/widgets/images/rounded_image.dart';
 import '../../../../common/widgets/layouts/grid_layout.dart';
 import '../../../../common/widgets/product/product_cards/product_card_vertical.dart';
 import '../../../../utils/constants/image_strings.dart';

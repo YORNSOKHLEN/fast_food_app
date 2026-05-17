@@ -9,7 +9,7 @@ class YPricingCalculator {
 
   /// Calculates shipping cost
   static String calculateShippingCost(double subTotal, String location) {
-    double shippingCost = 2.0; // always $2
+    double shippingCost = 1.0; // always $1
     return shippingCost.toStringAsFixed(2);
   }
 
@@ -25,7 +25,7 @@ class YPricingCalculator {
   }
 
   static double getShippingCost(String location) {
-    return 2.00; // Flat $5 shipping for demonstration
+    return 1.00; // Flat $1 shipping
   }
 
   /// Calculates shipping from coordinates.
@@ -42,6 +42,6 @@ class YPricingCalculator {
     // Phnom Penh zone gets lower shipping.
     final inPhnomPenh =
         latitude >= 11.45 && latitude <= 11.70 && longitude >= 104.75 && longitude <= 105.05;
-    return inPhnomPenh ? 1.50 : 3.00;
+    return inPhnomPenh ? 1.00 : 1.00;
   }
 }

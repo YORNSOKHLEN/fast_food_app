@@ -4,7 +4,6 @@ import '../../../features/shop/models/brand_model.dart';
 import '../../../utils/constants/colors.dart';
 import '../../../utils/constants/enums.dart';
 import '../../../utils/constants/sizes.dart';
-import '../../../utils/helpers/helper_functions.dart';
 import '../custom_shapes/containers/rounded_container.dart';
 import '../images/circular_image.dart';
 import '../texts/brand_title_text_with_verified_icon.dart';
@@ -23,7 +22,7 @@ class YBrandCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dark = YHelperFunctions.isDarkMode(context);
+    // final dark = YHelperFunctions.isDarkMode(context);
     return GestureDetector(
       onTap: onTab,
       child: YRoundedContainer(

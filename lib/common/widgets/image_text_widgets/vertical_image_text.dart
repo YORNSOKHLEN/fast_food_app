@@ -3,7 +3,6 @@ import 'package:fast_food/common/widgets/images/circular_image.dart';
 
 import '../../../../../utils/constants/colors.dart';
 import '../../../../../utils/constants/sizes.dart';
-import '../../../../../utils/helpers/helper_functions.dart';
 
 class YVerticalImageText extends StatelessWidget {
   const YVerticalImageText({

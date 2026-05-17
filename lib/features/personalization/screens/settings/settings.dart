@@ -16,11 +16,11 @@ import '../../../../common/widgets/texts/section_heading.dart';
 import 'create_coupon.dart';
 import 'coupon_list.dart';
 import 'upload_product.dart';
-import 'upload_poster.dart';
 import '../../../../data/repositories/authentication/authentication_repository.dart';
 import '../../../../data/services/data_upload_service.dart';
 import '../../../shop/screens/cart/cart.dart';
 import '../../../../utils/helpers/helper_functions.dart';
+import 'notifications.dart';
 
 class SettingsScreen extends StatelessWidget {
   const SettingsScreen({super.key});
@@ -117,16 +117,11 @@ class SettingsScreen extends StatelessWidget {
                         onTap: () => Get.to(() => const CouponListScreen()),
                       ),
                       const Divider(height: 1),
-                      const YSettingsMenuTile(
+                      YSettingsMenuTile(
                         icon: Iconsax.notification,
                         title: 'Notifications',
                         subTitle: 'Set any kind of notification message',
-                      ),
-                      const Divider(height: 1),
-                      const YSettingsMenuTile(
-                        icon: Iconsax.security_card,
-                        title: 'Account Privacy',
-                        subTitle: 'Manage data usage and connected accounts',
+                        onTap: () => Get.to(() => const NotificationScreen()),
                       ),
                     ],
                   ),

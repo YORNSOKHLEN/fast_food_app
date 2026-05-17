@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:fast_food/routes/app_routes.dart';
 import 'package:fast_food/utils/constants/colors.dart';
 import 'package:fast_food/utils/local_storage/storage_utility.dart';
+import 'package:fast_food/utils/services/notification_service.dart';
 import 'package:fast_food/utils/theme/theme.dart';
 
 import 'bindings/general_bindings.dart';
@@ -30,6 +31,8 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   ).then((FirebaseApp value) => Get.put(AuthenticationRepository()));
+
+  await YNotificationService.instance.initialize();
 
   await FirebaseAppCheck.instance.activate(
     providerAndroid: const AndroidPlayIntegrityProvider(),

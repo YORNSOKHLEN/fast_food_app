@@ -9,6 +9,7 @@ import '../../../../utils/constants/enums.dart';
 import '../../../../utils/constants/image_strings.dart';
 import '../../../../utils/popups/full_screen_loader.dart';
 import '../../../../utils/popups/loaders.dart';
+import '../../../../utils/services/notification_service.dart';
 import '../../models/cart_item_model.dart';
 import '../../models/order_model.dart';
 import 'cart_controller.dart';
@@ -61,6 +62,7 @@ class OrderController extends GetxController {
       }
 
       final orderItems = items ?? cartController.cartItems.toList();
+      final totalItemCount = orderItems.fold<int>(0, (sum, item) => sum + item.quantity);
 
       // Add Details
       final order = OrderModel(
@@ -99,6 +101,13 @@ class OrderController extends GetxController {
 
       // Update product popularity counters based on purchased quantities.
       await orderRepository.incrementProductOrderCounts(orderItems);
+
+      // Show a real device notification for the successful order.
+      await YNotificationService.instance.showOrderSuccessNotification(
+        orderId: order.id,
+        totalAmount: totalAmount,
+        itemCount: totalItemCount,
+      );
 
       // CLEAR CART AFTER SUCCESSFUL CHECKOUT
       if (clearCartAfterOrder) {
