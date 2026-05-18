@@ -9,27 +9,13 @@ import 'package:fast_food/utils/helpers/helper_functions.dart';
 import '../../../../../utils/constants/text_strings.dart';
 import '../../../controllers/signup/verify_email_controller.dart';
 
-class VerifyEmailScreen extends StatefulWidget {
-  const VerifyEmailScreen({super.key, this.email});
-
-  final String? email;
-
-  @override
-  State<VerifyEmailScreen> createState() => _VerifyEmailScreenState();
-}
-
-class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
-  late final VerifyEmailController controller;
-
-  @override
-  void initState() {
-    super.initState();
-    // Initialize controller in initState, not during build
-    controller = Get.put(VerifyEmailController(), permanent: false);
-  }
+class VerifyEmailScreen extends StatelessWidget {
+  const VerifyEmailScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final controller = Get.put(VerifyEmailController(), permanent: false);
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -59,10 +45,12 @@ class _VerifyEmailScreenState extends State<VerifyEmailScreen> {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: YSizes.spaceBtwItems),
-              Text(
-                widget.email ?? '',
-                style: Theme.of(context).textTheme.labelLarge,
-                textAlign: TextAlign.center,
+              Obx(
+                () => Text(
+                  controller.email.value,
+                  style: Theme.of(context).textTheme.labelLarge,
+                  textAlign: TextAlign.center,
+                ),
               ),
               const SizedBox(height: YSizes.spaceBtwItems),
               Text(

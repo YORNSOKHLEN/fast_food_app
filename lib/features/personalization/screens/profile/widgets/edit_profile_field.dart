@@ -4,8 +4,9 @@ import 'package:get/get.dart';
 import '../../../../../common/widgets/appbar/appbar.dart';
 import '../../../../../utils/constants/sizes.dart';
 import '../../../controllers/user_controller.dart';
+import '../../../controllers/edit_profile_field_controller.dart';
 
-class EditProfileFieldScreen extends StatefulWidget {
+class EditProfileFieldScreen extends StatelessWidget {
   const EditProfileFieldScreen({
     super.key,
     required this.title,
@@ -28,97 +29,24 @@ class EditProfileFieldScreen extends StatefulWidget {
   final bool useDatePicker;
 
   @override
-  State<EditProfileFieldScreen> createState() => _EditProfileFieldScreenState();
-}
-
-class _EditProfileFieldScreenState extends State<EditProfileFieldScreen> {
-  final _formKey = GlobalKey<FormState>();
-  late final TextEditingController _textController;
-  final RxnString _selectedOption = RxnString();
-  final Rxn<DateTime> _selectedDate = Rxn<DateTime>();
-
-  bool get _useDropdown =>
-      widget.options != null && widget.options!.isNotEmpty;
-
-  bool get _useDatePicker => widget.useDatePicker;
-
-  List<String> get _dropdownOptions {
-    final options = List<String>.from(widget.options ?? const []);
-    final initial = widget.initialValue.trim();
-    if (initial.isNotEmpty && !options.contains(initial)) {
-      options.insert(0, initial);
-    }
-    return options;
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _textController = TextEditingController(text: widget.initialValue);
-    if (_useDropdown) {
-      final initial = widget.initialValue.trim();
-      _selectedOption.value = initial.isEmpty ? null : initial;
-    }
-
-    if (_useDatePicker) {
-      _selectedDate.value = DateTime.tryParse(widget.initialValue.trim());
-    }
-  }
-
-  String _formatDate(DateTime date) {
-    final month = date.month.toString().padLeft(2, '0');
-    final day = date.day.toString().padLeft(2, '0');
-    return '${date.year}-$month-$day';
-  }
-
-  Future<void> _pickDate() async {
-    final now = DateTime.now();
-    final initialDate =
-        _selectedDate.value ?? DateTime(now.year - 18, now.month, now.day);
-    final pickedDate = await showDatePicker(
-      context: context,
-      initialDate: initialDate,
-      firstDate: DateTime(1900),
-      lastDate: now,
-    );
-
-    if (pickedDate != null) {
-      _selectedDate.value = pickedDate;
-      _textController.text = _formatDate(pickedDate);
-    }
-  }
-
-  @override
-  void dispose() {
-    _textController.dispose();
-    super.dispose();
-  }
-
-  Future<void> _saveField() async {
-    if (!_formKey.currentState!.validate()) return;
-
-    FocusScope.of(context).unfocus();
-
-    final value = _useDropdown
-        ? (_selectedOption.value ?? '').trim()
-        : _textController.text.trim();
-    await UserController.instance.updateSingleProfileField(
-      fieldKey: widget.fieldKey,
-      value: value,
-      successMessage: '${widget.title} has been updated.',
-    );
-
-    if (mounted) {
-      Get.back();
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final controller = Get.put(
+      EditProfileFieldController(
+        title: title,
+        label: label,
+        fieldKey: fieldKey,
+        initialValue: initialValue,
+        validator: validator,
+        keyboardType: keyboardType,
+        options: options,
+        useDatePicker: useDatePicker,
+      ),
+    );
+
     return Scaffold(
       appBar: YAppBar(
         showBackArrow: true,
-        title: Text(widget.title),
+        title: Text(title),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(YSizes.defaultSpace),
@@ -126,17 +54,17 @@ class _EditProfileFieldScreenState extends State<EditProfileFieldScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Update your ${widget.label.toLowerCase()} information below.',
+              'Update your ${label.toLowerCase()} information below.',
               style: Theme.of(context).textTheme.bodySmall,
             ),
             const SizedBox(height: YSizes.spaceBtwItems),
             Form(
-              key: _formKey,
-              child: _useDropdown
+              key: controller.formKey,
+              child: controller.useDropdown
                   ? Obx(
                       () => DropdownButtonFormField<String>(
-                        initialValue: _selectedOption.value,
-                        items: _dropdownOptions
+                        initialValue: controller.selectedOption.value,
+                        items: controller.dropdownOptions
                             .map(
                               (option) => DropdownMenuItem<String>(
                                 value: option,
@@ -144,30 +72,30 @@ class _EditProfileFieldScreenState extends State<EditProfileFieldScreen> {
                               ),
                             )
                             .toList(),
-                        onChanged: (value) => _selectedOption.value = value,
-                        validator: widget.validator ??
+                        onChanged: (value) => controller.selectedOption.value = value,
+                        validator: validator ??
                             (value) {
                               if ((value ?? '').trim().isEmpty) {
-                                return '${widget.label} is required.';
+                                return '$label is required.';
                               }
                               return null;
                             },
-                        decoration: InputDecoration(labelText: widget.label),
+                        decoration: InputDecoration(labelText: label),
                       ),
                     )
                   : TextFormField(
-                      controller: _textController,
-                      keyboardType: _useDatePicker
+                      controller: controller.textController,
+                      keyboardType: useDatePicker
                           ? TextInputType.none
-                          : widget.keyboardType,
-                      readOnly: _useDatePicker,
-                      onTap: _useDatePicker ? _pickDate : null,
-                      validator: widget.validator,
+                          : keyboardType,
+                      readOnly: useDatePicker,
+                      onTap: useDatePicker ? controller.pickDate : null,
+                      validator: validator,
                       decoration: InputDecoration(
-                        labelText: widget.label,
-                        suffixIcon: _useDatePicker
+                        labelText: label,
+                        suffixIcon: useDatePicker
                             ? IconButton(
-                                onPressed: _pickDate,
+                                onPressed: controller.pickDate,
                                 icon: const Icon(Icons.calendar_today),
                               )
                             : null,
@@ -178,7 +106,18 @@ class _EditProfileFieldScreenState extends State<EditProfileFieldScreen> {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: _saveField,
+                onPressed: () async {
+                  if (!controller.validateForm()) return;
+                  FocusScope.of(context).unfocus();
+
+                  await UserController.instance.updateSingleProfileField(
+                    fieldKey: fieldKey,
+                    value: controller.getFieldValue(),
+                    successMessage: '$title has been updated.',
+                  );
+
+                  Get.back();
+                },
                 child: const Text('Save'),
               ),
             ),

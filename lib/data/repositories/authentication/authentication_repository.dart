@@ -45,7 +45,10 @@ class AuthenticationRepository extends GetxController {
         // if email is verify
         Get.offAll(() => const NavigationMenu());
       } else {
-        Get.offAll(() => VerifyEmailScreen(email: user.email ?? ''));
+        Get.offAll(
+          () => const VerifyEmailScreen(),
+          arguments: user.email ?? '',
+        );
       }
     } else {
       deviceStorage.writeIfNull('IsFirstTime', true);

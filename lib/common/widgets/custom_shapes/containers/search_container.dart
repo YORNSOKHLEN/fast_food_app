@@ -32,8 +32,11 @@ class YSearchContainer extends StatelessWidget {
     final dark = YHelperFunctions.isDarkMode(context);
     return GestureDetector(
       // If an explicit onTap is provided use it, otherwise open SearchScreen.
-      // Use `initialQuery` only when a real query is supplied (not the placeholder `text`).
-      onTap: onTap ?? () => Get.to(() => SearchScreen(initialQuery: initialQuery)),
+      // Pass initialQuery via Get.arguments
+      onTap: onTap ?? () => Get.to(
+        () => const SearchScreen(),
+        arguments: initialQuery,
+      ),
       child: Padding(
         padding: padding,
         child: Container(

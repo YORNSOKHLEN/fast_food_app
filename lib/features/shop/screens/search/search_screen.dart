@@ -6,53 +6,21 @@ import '../../../../common/widgets/appbar/appbar.dart';
 import '../../../../common/widgets/layouts/grid_layout.dart';
 import '../../../../common/widgets/product/product_cards/product_card_vertical.dart';
 import '../../../../utils/constants/sizes.dart';
-import '../../controllers/product/product_controller.dart';
+import '../../controllers/search_controller.dart';
 
-class SearchScreen extends StatefulWidget {
-  const SearchScreen({super.key, this.initialQuery});
-
-  final String? initialQuery;
-
-  @override
-  State<SearchScreen> createState() => _SearchScreenState();
-}
-
-class _SearchScreenState extends State<SearchScreen> {
-  late final ProductController productController;
-  late final TextEditingController searchController;
-
-  @override
-  void initState() {
-    super.initState();
-    productController = Get.put(ProductController());
-    searchController = TextEditingController(
-      text: widget.initialQuery?.trim() ?? '',
-    );
-
-    // If an initial query was provided, perform the search once
-    final init = widget.initialQuery?.trim();
-    if (init != null && init.isNotEmpty) {
-      // use a post-frame callback to ensure UI is ready
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        productController.searchProducts(init);
-      });
-    }
-  }
-
-  @override
-  void dispose() {
-    productController.clearSearchResults();
-    searchController.dispose();
-    super.dispose();
-  }
+class SearchScreen extends StatelessWidget {
+  const SearchScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final searchCtrl = Get.put(ProductSearchController());
+    final productCtrl = searchCtrl.productController;
+
     return Scaffold(
       appBar: YAppBar(
         showBackArrow: true,
         title: TextField(
-          controller: searchController,
+          controller: searchCtrl.searchController,
           autofocus: true,
           decoration: InputDecoration(
             hintText: 'Search products...',
@@ -60,27 +28,27 @@ class _SearchScreenState extends State<SearchScreen> {
             suffixIcon: IconButton(
               icon: const Icon(Iconsax.search_normal),
               onPressed: () {
-                productController.searchProducts(searchController.text);
+                searchCtrl.performSearch(searchCtrl.searchController.text);
               },
             ),
           ),
           onChanged: (value) {
-            productController.searchProducts(value);
+            searchCtrl.performSearch(value);
           },
           onSubmitted: (value) {
-            productController.searchProducts(value);
+            searchCtrl.performSearch(value);
           },
         ),
       ),
       body: Obx(() {
-        if (productController.isLoading.value) {
+        if (productCtrl.isLoading.value) {
           return const Center(
             child: CircularProgressIndicator(),
           );
         }
 
-        if (productController.searchResults.isEmpty &&
-            searchController.text.isEmpty) {
+        if (productCtrl.searchResults.isEmpty &&
+            searchCtrl.searchController.text.isEmpty) {
           return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -101,7 +69,7 @@ class _SearchScreenState extends State<SearchScreen> {
           );
         }
 
-        if (productController.searchResults.isEmpty) {
+        if (productCtrl.searchResults.isEmpty) {
           return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -128,14 +96,14 @@ class _SearchScreenState extends State<SearchScreen> {
             child: Column(
               children: [
                 Text(
-                  'Found ${productController.searchResults.length} results',
+                  'Found ${productCtrl.searchResults.length} results',
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 const SizedBox(height: YSizes.spaceBtwSections),
                 YGridLayout(
-                  itemCount: productController.searchResults.length,
+                  itemCount: productCtrl.searchResults.length,
                   itemBuilder: (_, index) => ProductCardVertical(
-                    product: productController.searchResults[index],
+                    product: productCtrl.searchResults[index],
                   ),
                 ),
               ],

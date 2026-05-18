@@ -18,9 +18,12 @@ class VerifyEmailController extends GetxController {
 
   Timer? _redirectTimer;
   bool _hasHandledVerification = false;
+  final email = Rx<String>('');
 
   @override
   void onInit() {
+    // Get email from Firebase or arguments
+    email.value = FirebaseAuth.instance.currentUser?.email ?? Get.arguments ?? '';
     sendEmailVerification();
     setTimerForAutoRedirect();
     super.onInit();
