@@ -8,7 +8,6 @@ import '../../../data/repositories/user/user_repository.dart';
 import '../../../utils/constants/image_strings.dart';
 import '../../../utils/constants/sizes.dart';
 import '../../../utils/helpers/network_manager.dart';
-import '../../../utils/popups/full_screen_loader.dart';
 import '../../../utils/popups/loaders.dart';
 import '../../authentication/screens/login/login.dart';
 import '../models/user_model.dart';
@@ -113,7 +112,7 @@ class UserController extends GetxController {
 
   Future<void> deleteUserAccount() async {
     try {
-      YFullScreenLoader.openLoadingDialog('Processing', YImage.docerAnimation);
+      YLoaders.customToast(message: 'Processing');
 
       final auth = AuthenticationRepository.instance;
       final provider = auth.authUser!.providerData
@@ -124,15 +123,15 @@ class UserController extends GetxController {
         if (provider == 'google.com') {
           await auth.signInWithGoogle();
           await auth.deleteAccount();
-          YFullScreenLoader.stopLoading();
+          YLoaders.hideSnackBar();
           Get.offAll(() => const LoginScreen());
         } else if (provider == 'password') {
-          YFullScreenLoader.stopLoading();
+          YLoaders.hideSnackBar();
           Get.to(() => const ReAuthLoginForm());
         }
       }
     } catch (e) {
-      YFullScreenLoader.stopLoading();
+      YLoaders.hideSnackBar();
       YLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
     }
   }
@@ -140,12 +139,12 @@ class UserController extends GetxController {
   /// -- RE-AUTHENTICATE before deleting
   Future<void> reAuthenticateEmailAndPasswordUser() async {
     try {
-      YFullScreenLoader.openLoadingDialog('Processing', YImage.docerAnimation);
+      YLoaders.customToast(message: 'Processing');
 
       // Check Internet
       final isConnected = await NetworkManager.instance.isConnected();
       if (!isConnected) {
-        YFullScreenLoader.stopLoading();
+        YLoaders.hideSnackBar();
         YLoaders.errorSnackBar(
           title: 'No Internet',
           message: 'Please check your internet connection.',
@@ -154,7 +153,7 @@ class UserController extends GetxController {
       }
 
       if (!reAuthFormKey.currentState!.validate()) {
-        YFullScreenLoader.stopLoading();
+        YLoaders.hideSnackBar();
         return;
       }
 
@@ -166,10 +165,10 @@ class UserController extends GetxController {
 
       await AuthenticationRepository.instance.deleteAccount();
 
-      YFullScreenLoader.stopLoading();
+      YLoaders.hideSnackBar();
       Get.offAll(() => const LoginScreen());
     } catch (e) {
-      YFullScreenLoader.stopLoading();
+      YLoaders.hideSnackBar();
       YLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
     }
   }
@@ -224,14 +223,11 @@ class UserController extends GetxController {
     String? successMessage,
   }) async {
     try {
-      YFullScreenLoader.openLoadingDialog(
-        'We are updating your information...',
-        YImage.docerAnimation,
-      );
+      YLoaders.customToast(message: 'We are updating your information...');
 
       final isConnected = await NetworkManager.instance.isConnected();
       if (!isConnected) {
-        YFullScreenLoader.stopLoading();
+        YLoaders.hideSnackBar();
         YLoaders.errorSnackBar(
           title: 'No Internet',
           message: 'Please check your internet connection.',
@@ -260,13 +256,13 @@ class UserController extends GetxController {
       }
       user.refresh();
 
-      YFullScreenLoader.stopLoading();
+      YLoaders.hideSnackBar();
       YLoaders.successSnackBar(
         title: 'Congratulations',
         message: successMessage ?? 'Your information has been updated.',
       );
     } catch (e) {
-      YFullScreenLoader.stopLoading();
+      YLoaders.hideSnackBar();
       YLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
     }
   }

@@ -10,7 +10,6 @@ import 'package:get_storage/get_storage.dart';
 import 'package:fast_food/data/repositories/user/user_repository.dart';
 import 'package:fast_food/features/personalization/models/user_model.dart';
 import '../../../../utils/constants/image_strings.dart';
-import '../../../../utils/popups/full_screen_loader.dart';
 import '../../../../utils/popups/loaders.dart';
 
 class VerifyEmailController extends GetxController {
@@ -68,16 +67,13 @@ class VerifyEmailController extends GetxController {
   /// --- Manually Check if Email Verified
   Future<void> checkEmailVerificationStatus() async {
     try {
-      // Start Loading
-      YFullScreenLoader.openLoadingDialog(
-        'Checking email verification...',
-        YImage.docerAnimation,
-      );
+      // Show brief processing toast instead of full-screen loader
+      YLoaders.customToast(message: 'Checking email verification...');
 
       final currentUser = FirebaseAuth.instance.currentUser;
 
       if (currentUser == null) {
-        YFullScreenLoader.stopLoading();
+        YLoaders.hideSnackBar();
         YLoaders.warningSnackBar(
           title: 'Session Expired',
           message: 'Please login again to continue.',
@@ -89,7 +85,7 @@ class VerifyEmailController extends GetxController {
       final refreshedUser = FirebaseAuth.instance.currentUser;
 
       // Stop loading
-      YFullScreenLoader.stopLoading();
+        YLoaders.hideSnackBar();
 
       if (refreshedUser?.emailVerified ?? false) {
         await _handleVerifiedEmailSuccess();
@@ -100,7 +96,7 @@ class VerifyEmailController extends GetxController {
         );
       }
     } catch (e) {
-      YFullScreenLoader.stopLoading();
+      YLoaders.hideSnackBar();
       YLoaders.errorSnackBar(
         title: 'Error',
         message: e.toString(),

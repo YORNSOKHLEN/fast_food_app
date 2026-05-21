@@ -15,9 +15,10 @@ class CheckoutController extends GetxController {
 
   @override
   void onInit() {
+    // Default to PayWay QR so checkout always has a valid payment method.
     selectedPaymentMethod.value = PaymentMethodModel(
-      name: 'ABA',
-      image: YImage.aba,
+      image: YImage.khqr,
+      name: 'PayWay QR',
     );
     super.onInit();
   }
@@ -25,11 +26,12 @@ class CheckoutController extends GetxController {
   Future<dynamic> selectPaymentMethod(BuildContext context) {
     return showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
       builder: (_) => SingleChildScrollView(
-        child: Container(
+        child: Padding(
           padding: const EdgeInsets.all(YSizes.lg),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const YSectionHeading(
@@ -37,24 +39,15 @@ class CheckoutController extends GetxController {
                 showActionButton: false,
               ),
               const SizedBox(height: YSizes.spaceBtwSections),
-              YPaymentTile(
-                paymentMethod: PaymentMethodModel(
-                  name: 'ABA banks',
-                  image: YImage.aba,
-                ),
+              Text(
+                'Choose PayWay QR to pay with a live merchant QR code.',
+                style: Theme.of(context).textTheme.bodyMedium,
               ),
-              const SizedBox(height: YSizes.spaceBtwItems / 2),
+              const SizedBox(height: YSizes.spaceBtwItems),
               YPaymentTile(
                 paymentMethod: PaymentMethodModel(
-                  name: 'Acleda banks',
-                  image: YImage.acleda,
-                ),
-              ),
-              const SizedBox(height: YSizes.spaceBtwItems / 2),
-              YPaymentTile(
-                paymentMethod: PaymentMethodModel(
-                  name: 'KHQR',
                   image: YImage.khqr,
+                  name: 'PayWay QR',
                 ),
               ),
             ],

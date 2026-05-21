@@ -5,6 +5,7 @@ import '../../models/coupon_model.dart';
 import '../../models/cart_item_model.dart';
 import '../../../../data/repositories/coupon_repository.dart';
 import '../../../../data/repositories/authentication/authentication_repository.dart';
+import '../../../personalization/controllers/coupon_list_controller.dart';
 import 'cart_controller.dart';
 
 class CouponController extends GetxController {
@@ -106,6 +107,13 @@ class CouponController extends GetxController {
     final user = AuthenticationRepository.instance.authUser;
     if (coupon == null || user == null) return;
     await couponRepository.claimCouponUsage(couponId: coupon.id, userId: user.uid, orderId: orderId);
+
+    // Immediately remove used coupon from the list so it disappears right away
+    if (Get.isRegistered<CouponListController>()) {
+      final controller = Get.find<CouponListController>();
+      controller.removeCouponById(coupon.id);
+      // Refresh from server to ensure the user-specific list stays in sync.
+      await controller.fetchCoupons();
+    }
   }
 }
-

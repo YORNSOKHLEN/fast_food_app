@@ -5,7 +5,6 @@ import 'package:fast_food/data/repositories/category/category_repository.dart';
 import 'package:fast_food/data/repositories/product/product_repository.dart';
 import 'package:fast_food/data/repositories/posters/poster_repository.dart';
 import 'package:fast_food/utils/constants/image_strings.dart';
-import 'package:fast_food/utils/popups/full_screen_loader.dart';
 import 'package:fast_food/utils/popups/loaders.dart';
 
 /// Service for uploading dummy data to Firebase
@@ -16,10 +15,8 @@ class DataUploadService extends GetxService {
   Future<void> uploadAllData() async {
     try {
       // Show loading with initial message
-      YFullScreenLoader.openLoadingDialog(
-        'Uploading data to Firebase...',
-        YImage.docerAnimation,
-      );
+      // Show brief processing toast instead of full-screen loader
+      YLoaders.customToast(message: 'Uploading data to Firebase...');
 
       // Get repository instances (already registered in GeneralBindings)
       final categoryRepo = Get.put(CategoryRepository());
@@ -28,19 +25,23 @@ class DataUploadService extends GetxService {
       final posterRepo = Get.put(PosterRepository());
 
       // Upload Categories first
-      YFullScreenLoader.updateMessage('Uploading categories...');
+      YLoaders.hideSnackBar();
+      YLoaders.customToast(message: 'Uploading categories...');
       await categoryRepo.uploadDummyData(YDummyData.categories);
 
       // Upload Brands
-      YFullScreenLoader.updateMessage('Uploading brands...');
+      YLoaders.hideSnackBar();
+      YLoaders.customToast(message: 'Uploading brands...');
       await brandRepo.uploadDummyData(YDummyData.brands);
 
       // Upload Posters
-      YFullScreenLoader.updateMessage('Uploading posters...');
+      YLoaders.hideSnackBar();
+      YLoaders.customToast(message: 'Uploading posters...');
       await posterRepo.uploadDummyData(YDummyData.posters);
 
       // Upload Products
-      YFullScreenLoader.updateMessage('Uploading products...');
+      YLoaders.hideSnackBar();
+      YLoaders.customToast(message: 'Uploading products...');
       await productRepo.uploadDummyData(YDummyData.products);
 
 
@@ -53,17 +54,14 @@ class DataUploadService extends GetxService {
       YLoaders.errorSnackBar(title: 'Upload Failed', message: e.toString());
     } finally {
       // Stop loader after all uploads finish
-      YFullScreenLoader.stopLoading();
+      YLoaders.hideSnackBar();
     }
   }
 
   /// Upload only Categories
   Future<void> uploadCategories() async {
     try {
-      YFullScreenLoader.openLoadingDialog(
-        'Uploading categories...',
-        YImage.docerAnimation,
-      );
+      YLoaders.customToast(message: 'Uploading categories...');
       final categoryRepo = Get.find<CategoryRepository>();
       await categoryRepo.uploadDummyData(YDummyData.categories);
 
@@ -74,17 +72,14 @@ class DataUploadService extends GetxService {
     } catch (e) {
       YLoaders.errorSnackBar(title: 'Upload Failed', message: e.toString());
     } finally {
-      YFullScreenLoader.stopLoading();
+      YLoaders.hideSnackBar();
     }
   }
 
   /// Upload only Products
   Future<void> uploadProducts() async {
     try {
-      YFullScreenLoader.openLoadingDialog(
-        'Uploading products...',
-        YImage.docerAnimation,
-      );
+      YLoaders.customToast(message: 'Uploading products...');
       final productRepo = Get.find<ProductRepository>();
       await productRepo.uploadDummyData(YDummyData.products);
 
@@ -95,17 +90,14 @@ class DataUploadService extends GetxService {
     } catch (e) {
       YLoaders.errorSnackBar(title: 'Upload Failed', message: e.toString());
     } finally {
-      YFullScreenLoader.stopLoading();
+      YLoaders.hideSnackBar();
     }
   }
 
    /// Upload only Brands
    Future<void> uploadBrands() async {
      try {
-       YFullScreenLoader.openLoadingDialog(
-         'Uploading brands...',
-         YImage.docerAnimation,
-       );
+        YLoaders.customToast(message: 'Uploading brands...');
        final brandRepo = Get.find<BrandRepository>();
        await brandRepo.uploadDummyData(YDummyData.brands);
 
@@ -116,17 +108,14 @@ class DataUploadService extends GetxService {
      } catch (e) {
        YLoaders.errorSnackBar(title: 'Upload Failed', message: e.toString());
      } finally {
-       YFullScreenLoader.stopLoading();
+        YLoaders.hideSnackBar();
      }
    }
 
    /// Upload only Posters
    Future<void> uploadPosters() async {
      try {
-       YFullScreenLoader.openLoadingDialog(
-         'Uploading posters...',
-         YImage.docerAnimation,
-       );
+        YLoaders.customToast(message: 'Uploading posters...');
        final posterRepo = Get.find<PosterRepository>();
        await posterRepo.uploadDummyData(YDummyData.posters);
 
@@ -137,7 +126,7 @@ class DataUploadService extends GetxService {
      } catch (e) {
        YLoaders.errorSnackBar(title: 'Upload Failed', message: e.toString());
      } finally {
-       YFullScreenLoader.stopLoading();
+        YLoaders.hideSnackBar();
      }
    }
  }

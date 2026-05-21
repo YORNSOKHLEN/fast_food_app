@@ -6,7 +6,6 @@ import 'package:fast_food/utils/popups/loaders.dart';
 import '../../../../data/repositories/authentication/authentication_repository.dart';
 import 'package:get_storage/get_storage.dart';
 import '../../../../utils/helpers/network_manager.dart';
-import '../../../../utils/popups/full_screen_loader.dart';
 import '../../../personalization/models/user_model.dart';
 import '../../screens/signup/widgets/verify_email.dart';
 
@@ -43,15 +42,12 @@ class SignupController extends GetxController {
         return;
       }
 
-      YFullScreenLoader.openLoadingDialog(
-        'We are processing your information...',
-        YImage.docerAnimation,
-      );
+      YLoaders.customToast(message: 'We are processing your information...');
 
       // Check Internet
       final isConnected = await NetworkManager.instance.isConnected();
       if (!isConnected) {
-        YFullScreenLoader.stopLoading();
+        YLoaders.hideSnackBar();
         YLoaders.errorSnackBar(
           title: 'No Internet',
           message: 'Please check your internet connection.',
@@ -86,8 +82,8 @@ class SignupController extends GetxController {
       pending['id'] = userCredential.user!.uid;
       await storage.write('pending_user', pending);
 
-      // STOP loader BEFORE navigation
-      YFullScreenLoader.stopLoading();
+       // STOP loader BEFORE navigation
+       YLoaders.hideSnackBar();
 
       YLoaders.successSnackBar(
         title: 'Congratulations',
@@ -99,7 +95,7 @@ class SignupController extends GetxController {
         arguments: email.text.trim(),
       );
     } catch (e) {
-      YFullScreenLoader.stopLoading();
+      YLoaders.hideSnackBar();
       YLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
     }
   }

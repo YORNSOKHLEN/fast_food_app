@@ -51,7 +51,7 @@ class CouponListScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Get.put(CouponListController());
+    final controller = CouponListController.instance;
     final dark = YHelperFunctions.isDarkMode(context);
 
     return Scaffold(

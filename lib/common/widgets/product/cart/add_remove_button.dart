@@ -22,39 +22,31 @@ class YProductQuantityWithAddRemoveButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final dark = YHelperFunctions.isDarkMode(context);
     return Row(
+      mainAxisSize: MainAxisSize.min,
       children: [
-        const SizedBox(width: 70),
-
-        /// Add Remove Buttons
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            YCircularIcon(
-              icon: Iconsax.minus,
-              width: 32,
-              height: 32,
-              size: YSizes.md,
-              color: dark ? YColors.white : YColors.black,
-              backgroundColor: dark ? YColors.darkerGrey : YColors.light,
-              onPressed: remove,
-            ),
-            const SizedBox(width: YSizes.spaceBtwItems),
-            Text(
-              quantity.toString(),
-              style: Theme.of(context).textTheme.titleSmall,
-            ),
-            const SizedBox(width: YSizes.spaceBtwItems),
-
-            YCircularIcon(
-              icon: Iconsax.add,
-              width: 32,
-              height: 32,
-              size: YSizes.md,
-              color: YColors.white,
-              backgroundColor: YColors.buttonPrimary,
-              onPressed: add,
-            ),
-          ],
+        YCircularIcon(
+          icon: Iconsax.minus,
+          width: 32,
+          height: 32,
+          size: YSizes.md,
+          color: dark ? YColors.white : YColors.black,
+          backgroundColor: dark ? YColors.darkerGrey : YColors.light,
+          onPressed: remove,
+        ),
+        const SizedBox(width: YSizes.spaceBtwItems),
+        Text(
+          quantity.toString(),
+          style: Theme.of(context).textTheme.titleSmall,
+        ),
+        const SizedBox(width: YSizes.spaceBtwItems),
+        YCircularIcon(
+          icon: Iconsax.add,
+          width: 32,
+          height: 32,
+          size: YSizes.md,
+          color: YColors.white,
+          backgroundColor: YColors.buttonPrimary,
+          onPressed: add,
         ),
       ],
     );

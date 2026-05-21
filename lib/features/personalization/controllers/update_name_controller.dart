@@ -5,7 +5,6 @@ import 'package:fast_food/features/personalization/controllers/user_controller.d
 import '../../../data/repositories/user/user_repository.dart';
 import '../../../utils/constants/image_strings.dart';
 import '../../../utils/helpers/network_manager.dart';
-import '../../../utils/popups/full_screen_loader.dart';
 import '../../../utils/popups/loaders.dart';
 
 /// Controller to manage user-related functionality.
@@ -38,16 +37,13 @@ class UpdateNameController extends GetxController {
         return;
       }
 
-      // Start Loading
-      YFullScreenLoader.openLoadingDialog(
-        'We are updating your information...',
-        YImage.docerAnimation,
-      );
+      // Show a brief processing toast instead of full-screen loader
+      YLoaders.customToast(message: 'We are updating your information...');
 
       // Check Internet Connectivity
       final isConnected = await NetworkManager.instance.isConnected();
       if (!isConnected) {
-        YFullScreenLoader.stopLoading();
+        YLoaders.hideSnackBar();
         YLoaders.errorSnackBar(
           title: 'No Internet',
           message: 'Please check your internet connection.',
@@ -68,7 +64,7 @@ class UpdateNameController extends GetxController {
       userController.user.refresh();
 
       // Remove Loader
-      YFullScreenLoader.stopLoading();
+      YLoaders.hideSnackBar();
 
       // Show Success Message
       YLoaders.successSnackBar(
@@ -79,7 +75,7 @@ class UpdateNameController extends GetxController {
       // Return to profile screen; it will rebuild from refreshed user state.
       Get.back();
     } catch (e) {
-      YFullScreenLoader.stopLoading();
+      YLoaders.hideSnackBar();
       YLoaders.errorSnackBar(title: 'Oh Snap!', message: e.toString());
     }
   }

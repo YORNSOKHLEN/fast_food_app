@@ -5,7 +5,6 @@ import 'package:get_storage/get_storage.dart';
 import '../../../../data/repositories/authentication/authentication_repository.dart';
 import '../../../../utils/constants/image_strings.dart';
 import '../../../../utils/helpers/network_manager.dart';
-import '../../../../utils/popups/full_screen_loader.dart';
 import '../../../../utils/popups/loaders.dart';
 import '../../../personalization/controllers/user_controller.dart';
 
@@ -29,16 +28,13 @@ class LoginController extends GetxController {
   /// Email & Password Login
   Future<void> emailAndPasswordSignIn() async {
     try {
-      // Start Loading
-      YFullScreenLoader.openLoadingDialog(
-        'Logging you in...',
-        YImage.docerAnimation,
-      );
+      // Show processing toast instead of full-screen loader
+      YLoaders.customToast(message: 'Logging you in...');
 
       // Check Internet Connectivity
       final isConnected = await NetworkManager.instance.isConnected();
       if (!isConnected) {
-        YFullScreenLoader.stopLoading();
+        YLoaders.hideSnackBar();
         YLoaders.errorSnackBar(
           title: 'No Internet',
           message: 'Please check your internet connection.',
@@ -48,7 +44,7 @@ class LoginController extends GetxController {
 
       // Form Validation
       if (!loginFormKey.currentState!.validate()) {
-        YFullScreenLoader.stopLoading();
+        YLoaders.hideSnackBar();
         return;
       }
 
@@ -63,12 +59,12 @@ class LoginController extends GetxController {
           .loginWithEmailAndPassword(email.text.trim(), password.text.trim());
 
       // Remove Loader
-      YFullScreenLoader.stopLoading();
+      YLoaders.hideSnackBar();
 
       // Redirect
       AuthenticationRepository.instance.screenRedirect();
     } catch (e) {
-      YFullScreenLoader.stopLoading();
+      YLoaders.hideSnackBar();
       YLoaders.errorSnackBar(title: 'Oh Snap', message: e.toString());
     }
   }
@@ -76,16 +72,12 @@ class LoginController extends GetxController {
   /// Google SignIn Authentication
   Future<void> googleSignIn() async {
     try {
-      // Start Loading
-      YFullScreenLoader.openLoadingDialog(
-        'Logging you in...',
-        YImage.docerAnimation,
-      );
+      YLoaders.customToast(message: 'Logging you in...');
 
       // Check Internet Connectivity
       final isConnected = await NetworkManager.instance.isConnected();
       if (!isConnected) {
-        YFullScreenLoader.stopLoading();
+        YLoaders.hideSnackBar();
         YLoaders.errorSnackBar(
           title: 'No Internet',
           message: 'Please check your internet connection.',
@@ -108,7 +100,7 @@ class LoginController extends GetxController {
         YLoaders.errorSnackBar(title: 'Oh Snap', message: message);
       }
     } finally {
-      YFullScreenLoader.stopLoading();
+      YLoaders.hideSnackBar();
     }
   }
 

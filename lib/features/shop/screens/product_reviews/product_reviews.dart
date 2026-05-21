@@ -21,6 +21,9 @@ class ProductReviewsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Remove old controller instance to ensure we create a fresh one with the new product
+    Get.delete<ProductReviewsController>();
+
     final controller = Get.put(
       ProductReviewsController(product: product),
     );
@@ -47,144 +50,150 @@ class ProductReviewsScreen extends StatelessWidget {
                 final reviews = snapshot.data ?? const <ReviewModel>[];
                 final summary = controller.buildSummary(reviews);
 
-                return SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.all(YSizes.defaultSpace),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Share your real experience with ${product!.title}.',
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        ),
-                        const SizedBox(height: YSizes.spaceBtwSections),
+                return RefreshIndicator(
+                  onRefresh: () async {
+                    // Refresh reviews
+                    await Future.delayed(const Duration(milliseconds: 500));
+                  },
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.all(YSizes.defaultSpace),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Share your real experience with ${product!.title}.',
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                          const SizedBox(height: YSizes.spaceBtwSections),
 
-                        Text(
-                          'Write a Review',
-                          style: Theme.of(context).textTheme.titleLarge,
-                        ),
-                        const SizedBox(height: YSizes.spaceBtwItems),
-                        Form(
-                          key: controller.formKey,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Your rating',
-                                style: Theme.of(context).textTheme.titleMedium,
-                              ),
-                              const SizedBox(height: YSizes.spaceBtwItems / 2),
-                              Obx(
-                                () => RatingBar.builder(
-                                  initialRating: controller.selectedRating.value,
-                                  minRating: 1,
-                                  allowHalfRating: false,
-                                  itemCount: 5,
-                                  itemSize: 30,
-                                  itemBuilder: (context, index) => const Icon(
-                                    Iconsax.star1,
-                                    color: YColors.buttonPrimary,
+                          Text(
+                            'Write a Review',
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
+                          const SizedBox(height: YSizes.spaceBtwItems),
+                          Form(
+                            key: controller.formKey,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Your rating',
+                                  style: Theme.of(context).textTheme.titleMedium,
+                                ),
+                                const SizedBox(height: YSizes.spaceBtwItems / 2),
+                                Obx(
+                                  () => RatingBar.builder(
+                                    initialRating: controller.selectedRating.value,
+                                    minRating: 1,
+                                    allowHalfRating: false,
+                                    itemCount: 5,
+                                    itemSize: 30,
+                                    itemBuilder: (context, index) => const Icon(
+                                      Iconsax.star1,
+                                      color: YColors.buttonPrimary,
+                                    ),
+                                    onRatingUpdate: (rating) {
+                                      controller.selectedRating.value = rating;
+                                    },
                                   ),
-                                  onRatingUpdate: (rating) {
-                                    controller.selectedRating.value = rating;
+                                ),
+                                const SizedBox(height: YSizes.spaceBtwItems),
+                                TextFormField(
+                                  controller: controller.reviewController,
+                                  maxLines: 4,
+                                  decoration: const InputDecoration(
+                                    labelText: 'Write your review',
+                                    hintText: 'Tell others what you think...',
+                                    border: OutlineInputBorder(),
+                                  ),
+                                  validator: (value) {
+                                    if (value == null || value.trim().isEmpty) {
+                                      return 'Please enter a review';
+                                    }
+                                    return null;
                                   },
                                 ),
-                              ),
-                              const SizedBox(height: YSizes.spaceBtwItems),
-                              TextFormField(
-                                controller: controller.reviewController,
-                                maxLines: 4,
-                                decoration: const InputDecoration(
-                                  labelText: 'Write your review',
-                                  hintText: 'Tell others what you think...',
-                                  border: OutlineInputBorder(),
-                                ),
-                                validator: (value) {
-                                  if (value == null || value.trim().isEmpty) {
-                                    return 'Please enter a review';
-                                  }
-                                  return null;
-                                },
-                              ),
-                              const SizedBox(height: YSizes.spaceBtwItems),
-                              SizedBox(
-                                width: double.infinity,
-                                child: Obx(
-                                  () => ElevatedButton(
-                                    onPressed: controller.isSubmitting.value
-                                        ? null
-                                        : controller.submitReview,
-                                    child: Text(
-                                      controller.isSubmitting.value
-                                          ? 'Posting...'
-                                          : 'Submit Review',
+                                const SizedBox(height: YSizes.spaceBtwItems),
+                                SizedBox(
+                                  width: double.infinity,
+                                  child: Obx(
+                                    () => ElevatedButton(
+                                      onPressed: controller.isSubmitting.value
+                                          ? null
+                                          : controller.submitReview,
+                                      child: Text(
+                                        controller.isSubmitting.value
+                                            ? 'Posting...'
+                                            : 'Submit Review',
+                                      ),
                                     ),
                                   ),
                                 ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: YSizes.spaceBtwSections),
+
+                          Text(
+                            'Timeline',
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
+                          const SizedBox(height: YSizes.spaceBtwItems),
+                          YOverallProductRatings(
+                            averageRating: summary.averageRating,
+                            totalReviews: summary.totalReviews,
+                            ratingCounts: summary.ratingCounts,
+                          ),
+                          const SizedBox(height: YSizes.spaceBtwItems),
+                          YRatingBarIndicator(rating: summary.averageRating),
+                          const SizedBox(height: YSizes.spaceBtwItems / 2),
+                          Text(
+                            '${summary.totalReviews} ${summary.totalReviews == 1 ? 'review' : 'reviews'}',
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                          const SizedBox(height: YSizes.spaceBtwSections),
+
+                          if (snapshot.connectionState == ConnectionState.waiting &&
+                              reviews.isEmpty)
+                            const Padding(
+                              padding: EdgeInsets.symmetric(vertical: YSizes.lg),
+                              child: Center(child: CircularProgressIndicator()),
+                            )
+                          else if (reviews.isEmpty)
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: YSizes.lg,
                               ),
-                            ],
-                          ),
-                        ),
-                        const SizedBox(height: YSizes.spaceBtwSections),
+                              child: Text(
+                                'No reviews yet. Be the first to review this product.',
+                                style: Theme.of(context).textTheme.bodyMedium,
+                              ),
+                            )
+                          else
+                            ListView.separated(
+                              itemCount: reviews.length,
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              separatorBuilder: (context, index) =>
+                                  const SizedBox(height: YSizes.spaceBtwItems),
+                              itemBuilder: (context, index) {
+                                final review = reviews[index];
+                                final canDelete =
+                                    currentUserId != null &&
+                                    review.userId == currentUserId;
 
-                        Text(
-                          'Timeline',
-                          style: Theme.of(context).textTheme.titleLarge,
-                        ),
-                        const SizedBox(height: YSizes.spaceBtwItems),
-                        YOverallProductRatings(
-                          averageRating: summary.averageRating,
-                          totalReviews: summary.totalReviews,
-                          ratingCounts: summary.ratingCounts,
-                        ),
-                        const SizedBox(height: YSizes.spaceBtwItems),
-                        YRatingBarIndicator(rating: summary.averageRating),
-                        const SizedBox(height: YSizes.spaceBtwItems / 2),
-                        Text(
-                          '${summary.totalReviews} ${summary.totalReviews == 1 ? 'review' : 'reviews'}',
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        ),
-                        const SizedBox(height: YSizes.spaceBtwSections),
-
-                        if (snapshot.connectionState == ConnectionState.waiting &&
-                            reviews.isEmpty)
-                          const Padding(
-                            padding: EdgeInsets.symmetric(vertical: YSizes.lg),
-                            child: Center(child: CircularProgressIndicator()),
-                          )
-                        else if (reviews.isEmpty)
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: YSizes.lg,
+                                return YUserReviewCard(
+                                  review: review,
+                                  canDelete: canDelete,
+                                  onDelete: canDelete
+                                      ? () => controller.deleteReview(review.id)
+                                      : null,
+                                );
+                              },
                             ),
-                            child: Text(
-                              'No reviews yet. Be the first to review this product.',
-                              style: Theme.of(context).textTheme.bodyMedium,
-                            ),
-                          )
-                        else
-                          ListView.separated(
-                            itemCount: reviews.length,
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            separatorBuilder: (context, index) =>
-                                const SizedBox(height: YSizes.spaceBtwItems),
-                            itemBuilder: (context, index) {
-                              final review = reviews[index];
-                              final canDelete =
-                                  currentUserId != null &&
-                                  review.userId == currentUserId;
-
-                              return YUserReviewCard(
-                                review: review,
-                                canDelete: canDelete,
-                                onDelete: canDelete
-                                    ? () => controller.deleteReview(review.id)
-                                    : null,
-                              );
-                            },
-                          ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 );

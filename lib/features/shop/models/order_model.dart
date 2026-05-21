@@ -22,7 +22,7 @@ class OrderModel {
     required this.items,
     required this.totalAmount,
     required this.orderDate,
-    this.paymentMethod = 'ABA',
+    this.paymentMethod = 'PayWay QR',
     // this.address,
     // this.deliveryDate,
   });

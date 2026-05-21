@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:iconsax/iconsax.dart';
 
 import '../../../features/shop/controllers/product/checkout_controller.dart';
 import '../../../features/shop/models/payment_method_model.dart';
-import '../../../utils/constants/colors.dart';
-import '../../../utils/constants/sizes.dart';
-import '../../../utils/helpers/helper_functions.dart';
-import '../custom_shapes/containers/rounded_container.dart';
 
+/// Simplified payment tile. Payment functionality removed; this widget only selects a method name.
 class YPaymentTile extends StatelessWidget {
   const YPaymentTile({super.key, required this.paymentMethod});
 
@@ -24,21 +20,8 @@ class YPaymentTile extends StatelessWidget {
         controller.selectedPaymentMethod.value = paymentMethod;
         Get.back();
       },
-      leading: YRoundedContainer(
-        width: 60,
-        height: 40,
-        backgroundColor: YHelperFunctions.isDarkMode(context)
-            ? YColors.light
-            : YColors.white,
-        padding: const EdgeInsets.all(YSizes.sm),
-        child: Image(
-          image: AssetImage(paymentMethod.image),
-          fit: BoxFit.contain,
-        ),
-      ),
-      // TRoundedContainer
       title: Text(paymentMethod.name),
-      trailing: const Icon(Iconsax.arrow_right_34),
-    ); // ListTile
+      trailing: const Icon(Icons.arrow_forward),
+    );
   }
 }

@@ -26,9 +26,14 @@ class OrderRepository extends GetxController {
           .doc(userId)
           .collection('Orders')
           .get();
-      return result.docs
+      final orders = result.docs
           .map((documentSnapshot) => OrderModel.fromSnapshot(documentSnapshot))
           .toList();
+
+      // Sort orders from newest to oldest
+      orders.sort((a, b) => b.orderDate.compareTo(a.orderDate));
+
+      return orders;
     } catch (e) {
       throw 'Something went wrong while fetching Order Information. Try again later';
     }

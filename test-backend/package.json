@@ -1,0 +1,27 @@
+{
+  "name": "payway-sample-backend",
+  "version": "1.0.0",
+  "description": "Sample backend for PayWay KHQR payment sessions and verification",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "demo": "node demo-client.js"
+  },
+  "keywords": [
+    "aba",
+    "payway",
+    "khqr",
+    "payment",
+    "test",
+    "backend"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5"
+  }
+}
+

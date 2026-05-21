@@ -7,7 +7,6 @@ import 'package:image_picker/image_picker.dart';
 import '../../../data/repositories/posters/poster_repository.dart';
 import '../../../data/services/cloud_storage/firebase_storage_service.dart';
 import '../../../utils/constants/image_strings.dart';
-import '../../../utils/popups/full_screen_loader.dart';
 import '../../../utils/popups/loaders.dart';
 import '../../shop/models/poster_model.dart';
 
@@ -64,7 +63,7 @@ class UploadPosterController extends GetxController {
     }
 
     try {
-      YFullScreenLoader.openLoadingDialog('Uploading poster...', YImage.docerAnimation);
+      YLoaders.customToast(message: 'Uploading poster...');
 
       // Upload image
       final fileName = '${DateTime.now().millisecondsSinceEpoch}_poster.jpg';
@@ -88,7 +87,7 @@ class UploadPosterController extends GetxController {
       // Save to Firestore
       await _posterRepo.uploadPoster(poster);
 
-      YFullScreenLoader.stopLoading();
+      YLoaders.hideSnackBar();
 
       YLoaders.successSnackBar(
         title: 'Success',
@@ -99,7 +98,7 @@ class UploadPosterController extends GetxController {
       _clearForm();
       Get.back();
     } catch (e) {
-      YFullScreenLoader.stopLoading();
+      YLoaders.hideSnackBar();
       YLoaders.errorSnackBar(title: 'Error', message: 'Failed to upload poster: $e');
     }
   }

@@ -13,6 +13,7 @@ import '../../../../common/widgets/custom_shapes/containers/rounded_container.da
 import '../../../../common/widgets/list_tile/settings_menu_tile.dart';
 import '../../../../common/widgets/list_tile/user_profile_tile.dart';
 import '../../../../common/widgets/texts/section_heading.dart';
+import '../../controllers/coupon_list_controller.dart';
 import 'create_coupon.dart';
 import 'coupon_list.dart';
 import 'upload_product.dart';
@@ -45,38 +46,43 @@ class SettingsScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: dark ? YColors.dark : YColors.light,
-      body: ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          YPrimaryHeaderContainer(
-            child: Column(
-              children: [
-                // AppBar
-                YAppBar(
-                  title: Text(
-                    'Account',
-                    style: Theme.of(
-                      context,
-                    ).textTheme.headlineMedium!.apply(color: YColors.white),
+      body: RefreshIndicator(
+        onRefresh: () async {
+          // Refresh user data
+          await userController.fetchUserRecord();
+        },
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            YPrimaryHeaderContainer(
+              child: Column(
+                children: [
+                  // AppBar
+                  YAppBar(
+                    title: Text(
+                      'Account',
+                      style: Theme.of(
+                        context,
+                      ).textTheme.headlineMedium!.apply(color: YColors.white),
+                    ),
                   ),
-                ),
 
-                // User Profile Tile
-                YUserProfileTile(
-                  onPressed: () => Get.to(() => const ProfileScreen()),
-                ),
+                  // User Profile Tile
+                  YUserProfileTile(
+                    onPressed: () => Get.to(() => const ProfileScreen()),
+                  ),
 
-                const SizedBox(height: YSizes.spaceBtwSections),
-              ],
+                  const SizedBox(height: YSizes.spaceBtwSections),
+                ],
+              ),
             ),
-          ),
 
-          // Body
-          Padding(
-            padding: const EdgeInsets.all(YSizes.defaultSpace),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+            // Body
+            Padding(
+              padding: const EdgeInsets.all(YSizes.defaultSpace),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                 /// -- Account Settings
                 const YSectionHeading(
                   title: 'Account Settings',
@@ -114,7 +120,13 @@ class SettingsScreen extends StatelessWidget {
                         icon: Iconsax.discount_shape,
                         title: 'My Coupons',
                         subTitle: 'View available coupons',
-                        onTap: () => Get.to(() => const CouponListScreen()),
+                        onTap: () {
+                          if (Get.isRegistered<CouponListController>()) {
+                            Get.delete<CouponListController>(force: true);
+                          }
+                          Get.put(CouponListController());
+                          Get.to(() => const CouponListScreen());
+                        },
                       ),
                       const Divider(height: 1),
                       YSettingsMenuTile(
@@ -162,8 +174,13 @@ class SettingsScreen extends StatelessWidget {
                               icon: Iconsax.discount_shape,
                               title: 'Coupons',
                               subTitle: 'View coupon list and usage details',
-                              onTap: () =>
-                                  Get.to(() => const CouponListScreen()),
+                              onTap: () {
+                                if (Get.isRegistered<CouponListController>()) {
+                                  Get.delete<CouponListController>(force: true);
+                                }
+                                Get.put(CouponListController());
+                                Get.to(() => const CouponListScreen());
+                              },
                             ),
                             const Divider(height: 1),
                             YSettingsMenuTile(
@@ -204,7 +221,8 @@ class SettingsScreen extends StatelessWidget {
               ],
             ),
           ),
-        ],
+          ],
+        ),
       ),
     );
   }

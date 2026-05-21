@@ -15,7 +15,7 @@ class ProductReviewsController extends GetxController {
 
   final RxDouble selectedRating = 0.0.obs;
   final RxBool isSubmitting = false.obs;
-  late final ProductModel? product;
+  final ProductModel? product;
 
   ProductReviewsController({this.product});
 
@@ -37,39 +37,47 @@ class ProductReviewsController extends GetxController {
 
   /// Submit a review
   Future<void> submitReview() async {
-    if (product == null) {
-      return;
-    }
-
-    if (!formKey.currentState!.validate()) {
-      return;
-    }
-
-    if (selectedRating.value <= 0) {
-      YLoaders.warningSnackBar(
-        title: 'Rating required',
-        message: 'Please select a rating before submitting your review.',
-      );
-      return;
-    }
-
-    final authUser = AuthenticationRepository.instance.authUser;
-    if (authUser == null) {
-      YLoaders.warningSnackBar(
-        title: 'Sign in required',
-        message: 'Please sign in before writing a review.',
-      );
-      return;
-    }
-
-    final displayName = authUser.displayName?.trim();
-    final userName = displayName != null && displayName.isNotEmpty
-        ? displayName
-        : (authUser.email?.split('@').first ?? 'Anonymous');
-
-    isSubmitting.value = true;
-
     try {
+      if (product == null) {
+        YLoaders.errorSnackBar(
+          title: 'Error',
+          message: 'Product not found. Please go back and try again.',
+        );
+        return;
+      }
+
+      if (!formKey.currentState!.validate()) {
+        YLoaders.warningSnackBar(
+          title: 'Validation Error',
+          message: 'Please fill in all required fields.',
+        );
+        return;
+      }
+
+      if (selectedRating.value <= 0) {
+        YLoaders.warningSnackBar(
+          title: 'Rating required',
+          message: 'Please select a rating before submitting your review.',
+        );
+        return;
+      }
+
+      final authUser = AuthenticationRepository.instance.authUser;
+      if (authUser == null) {
+        YLoaders.warningSnackBar(
+          title: 'Sign in required',
+          message: 'Please sign in before writing a review.',
+        );
+        return;
+      }
+
+      final displayName = authUser.displayName?.trim();
+      final userName = displayName != null && displayName.isNotEmpty
+          ? displayName
+          : (authUser.email?.split('@').first ?? 'Anonymous');
+
+      isSubmitting.value = true;
+
       await reviewRepository.addReview(
         ReviewModel(
           id: DateTime.now().microsecondsSinceEpoch.toString(),

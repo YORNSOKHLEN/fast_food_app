@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 
 import '../../../../data/repositories/coupon_repository.dart';
 import '../../../../utils/constants/image_strings.dart';
-import '../../../../utils/popups/full_screen_loader.dart';
 import '../../../../utils/popups/loaders.dart';
 
 class CreateCouponController extends GetxController {
@@ -62,7 +61,7 @@ class CreateCouponController extends GetxController {
       return;
     }
     try {
-      YFullScreenLoader.openLoadingDialog('Creating coupon...', YImage.docerAnimation);
+      YLoaders.customToast(message: 'Creating coupon...');
 
       final data = <String, dynamic>{
         'code': code.text.trim(),
@@ -79,7 +78,7 @@ class CreateCouponController extends GetxController {
       };
 
       final id = await _repo.createCoupon(data);
-      YFullScreenLoader.stopLoading();
+      YLoaders.hideSnackBar();
 
       YLoaders.successSnackBar(
         title: 'Success',
@@ -88,7 +87,7 @@ class CreateCouponController extends GetxController {
 
       Get.back();
     } catch (e) {
-      YFullScreenLoader.stopLoading();
+      YLoaders.hideSnackBar();
       YLoaders.errorSnackBar(title: 'Error', message: e.toString());
     }
   }

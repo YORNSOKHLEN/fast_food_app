@@ -7,7 +7,6 @@ import 'package:image_picker/image_picker.dart';
 import '../../../data/repositories/product/product_repository.dart';
 import '../../../data/services/cloud_storage/firebase_storage_service.dart';
 import '../../../utils/constants/image_strings.dart';
-import '../../../utils/popups/full_screen_loader.dart';
 import '../../../utils/popups/loaders.dart';
 import '../../shop/models/brand_model.dart';
 import '../../shop/models/product_model.dart';
@@ -124,7 +123,7 @@ class UploadProductController extends GetxController {
     }
 
     try {
-      YFullScreenLoader.openLoadingDialog('Uploading product...', YImage.docerAnimation);
+      YLoaders.customToast(message: 'Uploading product...');
 
       // Upload thumbnail
       final thumbUrl = await _storageService.uploadImageData(
@@ -172,7 +171,7 @@ class UploadProductController extends GetxController {
       // Save to Firestore
       await _productRepo.saveProduct(product);
 
-      YFullScreenLoader.stopLoading();
+      YLoaders.hideSnackBar();
 
       YLoaders.successSnackBar(
         title: 'Success',
@@ -183,7 +182,7 @@ class UploadProductController extends GetxController {
       _clearForm();
       Get.back();
     } catch (e) {
-      YFullScreenLoader.stopLoading();
+      YLoaders.hideSnackBar();
       YLoaders.errorSnackBar(title: 'Error', message: 'Failed to upload product: $e');
     }
   }

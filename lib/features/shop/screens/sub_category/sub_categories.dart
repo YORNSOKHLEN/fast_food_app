@@ -33,99 +33,108 @@ class CategoriesScreen extends StatelessWidget {
           title: Text(category?.name ?? 'Categories'),
           showBackArrow: true,
         ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(YSizes.defaultSpace),
-            child: Column(
-              children: [
-                // Banner
-                // YRoundedImage(
-                //   width: double.infinity,
-                //   height: MediaQuery.of(context).size.height * 0.25,
-                //   imageUrl: category?.image.isNotEmpty == true
-                //       ? category!.image
-                //       : YImage.banner1,
-                //   applyImageRadius: true,
-                //   fit: BoxFit.cover,
-                // ),
-                // const SizedBox(height: YSizes.spaceBtwSections),
+        body: RefreshIndicator(
+          onRefresh: () async {
+            // Refresh subcategories and products
+            await Future.wait([
+              controller.getSubCategories(categoryId),
+              controller.getCategoryProducts(categoryId: categoryId, limit: -1),
+            ]);
+          },
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(YSizes.defaultSpace),
+              child: Column(
+                children: [
+                  // Banner
+                  // YRoundedImage(
+                  //   width: double.infinity,
+                  //   height: MediaQuery.of(context).size.height * 0.25,
+                  //   imageUrl: category?.image.isNotEmpty == true
+                  //       ? category!.image
+                  //       : YImage.banner1,
+                  //   applyImageRadius: true,
+                  //   fit: BoxFit.cover,
+                  // ),
+                  // const SizedBox(height: YSizes.spaceBtwSections),
 
-                FutureBuilder<List<CategoryModel>>(
-                  future: controller.getSubCategories(categoryId),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
+                  FutureBuilder<List<CategoryModel>>(
+                    future: controller.getSubCategories(categoryId),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
 
-                    // Check if there are subcategories
-                    final subCategories =
-                        snapshot.data ?? const <CategoryModel>[];
-                    if (subCategories.isNotEmpty) {
-                      return SizedBox(
-                        height: 110,
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          scrollDirection: Axis.horizontal,
-                          itemCount: subCategories.length,
-                          itemBuilder: (_, index) {
-                            final subCategory = subCategories[index];
-                            return YVerticalImageText(
-                              image: subCategory.image.isNotEmpty
-                                  ? subCategory.image
-                                  : YImage.iconStore,
-                              title: subCategory.name,
-                              onTap: () => Get.toNamed(
-                                YRoutes.subCategories,
-                                arguments: subCategory.id,
+                      // Check if there are subcategories
+                      final subCategories =
+                          snapshot.data ?? const <CategoryModel>[];
+                      if (subCategories.isNotEmpty) {
+                        return SizedBox(
+                          height: 110,
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            scrollDirection: Axis.horizontal,
+                            itemCount: subCategories.length,
+                            itemBuilder: (_, index) {
+                              final subCategory = subCategories[index];
+                              return YVerticalImageText(
+                                image: subCategory.image.isNotEmpty
+                                    ? subCategory.image
+                                    : YImage.iconStore,
+                                title: subCategory.name,
+                                onTap: () => Get.toNamed(
+                                  YRoutes.subCategories,
+                                  arguments: subCategory.id,
+                                ),
+                              );
+                            },
+                          ),
+                        );
+                      }
+
+                      // If no subcategories, show products for this category instead
+                      return FutureBuilder<List<ProductModel>>(
+                        future: controller.getCategoryProducts(
+                          categoryId: categoryId,
+                          limit: -1,
+                        ),
+                        builder: (context, productSnapshot) {
+                          if (productSnapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          }
+
+                          if (productSnapshot.hasError) {
+                            return Center(
+                              child: Text(
+                                'Failed to load products',
+                                style: Theme.of(context).textTheme.bodyMedium,
                               ),
                             );
-                          },
-                        ),
+                          }
+
+                          final products = productSnapshot.data ?? const [];
+                          if (products.isEmpty) {
+                            return Center(
+                              child: Text(
+                                'No products found.',
+                                style: Theme.of(context).textTheme.bodyMedium,
+                              ),
+                            );
+                          }
+
+                          return YGridLayout(
+                            itemCount: products.length,
+                            itemBuilder: (_, index) =>
+                                ProductCardVertical(product: products[index]),
+                          );
+                        },
                       );
-                    }
-
-                    // If no subcategories, show products for this category instead
-                    return FutureBuilder<List<ProductModel>>(
-                      future: controller.getCategoryProducts(
-                        categoryId: categoryId,
-                        limit: -1,
-                      ),
-                      builder: (context, productSnapshot) {
-                        if (productSnapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return const Center(
-                              child: CircularProgressIndicator());
-                        }
-
-                        if (productSnapshot.hasError) {
-                      return Center(
-                        child: Text(
-                          'Failed to load products',
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        ),
-                      );
-                    }
-
-                    final products = productSnapshot.data ?? const [];
-                    if (products.isEmpty) {
-                      return Center(
-                        child: Text(
-                          'No products found.',
-                          style: Theme.of(context).textTheme.bodyMedium,
-                        ),
-                      );
-                    }
-
-                    return YGridLayout(
-                      itemCount: products.length,
-                      itemBuilder: (_, index) =>
-                          ProductCardVertical(product: products[index]),
-                    );
-                      },
-                    );
-                  },
-                ),
-              ],
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         ),

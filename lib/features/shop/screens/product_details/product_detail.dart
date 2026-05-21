@@ -34,89 +34,95 @@ class ProductDetailScreen extends StatelessWidget {
 
       return Scaffold(
         bottomNavigationBar: YButtonAddToCartWidgets(product: product),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              // Product Image Slider
-              YProductImageSlider(product: product),
+        body: RefreshIndicator(
+          onRefresh: () async {
+            // Refresh cart count for this product
+            controller.cartController.updateAlreadyAddedProductCount(product);
+          },
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                // Product Image Slider
+                YProductImageSlider(product: product),
 
-              // Product Details
-              Padding(
-                padding: EdgeInsets.only(
-                  right: YSizes.defaultSpace,
-                  left: YSizes.defaultSpace,
-                  bottom: YSizes.defaultSpace,
-                ),
-                child: Column(
-                  children: [
-                    // Ratting & Share Button
-                    YRattingAndShare(product: product),
+                // Product Details
+                Padding(
+                  padding: EdgeInsets.only(
+                    right: YSizes.defaultSpace,
+                    left: YSizes.defaultSpace,
+                    bottom: YSizes.defaultSpace,
+                  ),
+                  child: Column(
+                    children: [
+                      // Ratting & Share Button
+                      YRattingAndShare(product: product),
 
-                    // Price Title Stock Brand
-                    YProductMetaData(product: product),
+                      // Price Title Stock Brand
+                      YProductMetaData(product: product),
 
-                    // Check out
-                    SizedBox(
-                      width: double.infinity,
-                      child: Obx(
-                        () => ElevatedButton(
-                          onPressed: () {
-                            controller.cartController.addToCart(product);
-                            Get.to(() => const CheckoutScreen());
-                          },
-                          child: Text(
-                            'Check out \$${(product.salePrice > 0 ? product.salePrice : product.price) * controller.cartController.productQuantityInCart.value}',
+                      // Check out
+                      SizedBox(
+                        width: double.infinity,
+                        child: Obx(
+                          () => ElevatedButton(
+                            onPressed: () {
+                              controller.cartController.addToCart(product);
+                              Get.to(() => const CheckoutScreen());
+                            },
+                            child: Text(
+                              'Check out \$${(product.salePrice > 0 ? product.salePrice : product.price) * controller.cartController.productQuantityInCart.value}',
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    SizedBox(height: YSizes.spaceBtwSections),
+                      SizedBox(height: YSizes.spaceBtwSections),
 
-                    // Description
-                    YSectionHeading(
-                      title: 'Description',
-                      showActionButton: false,
-                    ),
-                    SizedBox(height: YSizes.spaceBtwItems),
-                    ReadMoreText(
-                      product.description ?? 'No description available',
-                      trimLines: 3,
-                      trimMode: TrimMode.Line,
-                      trimCollapsedText: 'Show more',
-                      trimExpandedText: 'Less',
-                      moreStyle: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w800,
+                      // Description
+                      YSectionHeading(
+                        title: 'Description',
+                        showActionButton: false,
                       ),
-                      lessStyle: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w800,
+                      SizedBox(height: YSizes.spaceBtwItems),
+                      ReadMoreText(
+                        product.description ?? 'No description available',
+                        trimLines: 3,
+                        trimMode: TrimMode.Line,
+                        trimCollapsedText: 'Show more',
+                        trimExpandedText: 'Less',
+                        moreStyle: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w800,
+                        ),
+                        lessStyle: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w800,
+                        ),
                       ),
-                    ),
 
-                    // Review
-                    const Divider(),
-                    SizedBox(height: YSizes.spaceBtwItems),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        YSectionHeading(
-                          title: 'Reviews',
-                          showActionButton: false,
-                        ),
-                        IconButton(
-                          onPressed: () =>
-                              Get.to(() => ProductReviewsScreen(product: product)),
-                          icon: const Icon(Iconsax.arrow_right_3),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: YSizes.spaceBtwSections),
-                    // Review Card
-                  ],
+                      // Review
+                      const Divider(),
+                      SizedBox(height: YSizes.spaceBtwItems),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          YSectionHeading(
+                            title: 'Reviews',
+                            showActionButton: false,
+                          ),
+                          IconButton(
+                            onPressed: () =>
+                                Get.to(() => ProductReviewsScreen(product: product)),
+                            icon: const Icon(Iconsax.arrow_right_3),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: YSizes.spaceBtwSections),
+                      // Review Card
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       );

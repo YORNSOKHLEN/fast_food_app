@@ -69,47 +69,53 @@ class CheckoutScreen extends StatelessWidget {
           );
         }),
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(YSizes.defaultSpace),
-          child: Column(
-            children: [
-              /// -- Items in Cart
-              const CartItem(showAddRemoveButton: false),
-              const SizedBox(height: YSizes.spaceBtwSections),
+      body: RefreshIndicator(
+        onRefresh: () async {
+          // Refresh cart and coupon data
+          cartController.updateCart();
+        },
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(YSizes.defaultSpace),
+            child: Column(
+              children: [
+                /// -- Items in Cart
+                const CartItem(showAddRemoveButton: false),
+                const SizedBox(height: YSizes.spaceBtwSections),
 
-              /// -- Coupon TextField
-              YCouponCode(),
-              const SizedBox(height: YSizes.spaceBtwSections),
+                /// -- Coupon TextField
+                YCouponCode(),
+                const SizedBox(height: YSizes.spaceBtwSections),
 
-              /// -- Billing Address Section (with Phone Number and Map Picker)
-              YBillingAddressSection(),
-              const SizedBox(height: YSizes.spaceBtwSections),
+                /// -- Billing Address Section (with Phone Number and Map Picker)
+                YBillingAddressSection(),
+                const SizedBox(height: YSizes.spaceBtwSections),
 
-              /// -- Billing Section
-              YRoundedContainer(
-                showBorder: true,
-                padding: const EdgeInsets.all(YSizes.md),
-                backgroundColor: dark ? YColors.black : YColors.white,
-                child: Column(
-                  children: [
-                    // Pricing
-                    YBillingAmountSection(),
-                    SizedBox(height: YSizes.spaceBtwItems),
+                /// -- Billing Section
+                YRoundedContainer(
+                  showBorder: true,
+                  padding: const EdgeInsets.all(YSizes.md),
+                  backgroundColor: dark ? YColors.black : YColors.white,
+                  child: Column(
+                    children: [
+                      // Pricing
+                      YBillingAmountSection(),
+                      SizedBox(height: YSizes.spaceBtwItems),
 
-                    // Divider
-                    Divider(),
-                    SizedBox(height: YSizes.spaceBtwItems),
+                      // Divider
+                      Divider(),
+                      SizedBox(height: YSizes.spaceBtwItems),
 
-                    // Payment Methods
-                    YBillingPaymentSection(),
-                    SizedBox(height: YSizes.spaceBtwItems),
+                      // Payment Methods
+                      YBillingPaymentSection(),
+                      SizedBox(height: YSizes.spaceBtwItems),
 
-                    // Address
-                  ],
+                      // Address
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

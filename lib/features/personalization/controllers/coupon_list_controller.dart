@@ -43,6 +43,11 @@ class CouponListController extends GetxController {
       isLoading.value = false;
     }
   }
+
+  /// Remove a coupon from the current list immediately after it has been used.
+  void removeCouponById(String couponId) {
+    coupons.removeWhere((coupon) => coupon.id == couponId);
+  }
 }
 
 
