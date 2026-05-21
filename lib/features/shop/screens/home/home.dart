@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:fast_food/common/widgets/product/product_cards/product_card_vertical.dart';
 import 'package:fast_food/features/shop/screens/home/widgets/home_appbar.dart';
 import 'package:fast_food/features/shop/screens/home/widgets/home_categories.dart';
+import 'package:fast_food/features/shop/screens/home/widgets/home_shimmer.dart';
 import 'package:fast_food/features/shop/screens/home/widgets/promo_slider.dart';
 import 'package:fast_food/utils/constants/sizes.dart';
 
@@ -24,78 +25,85 @@ class HomeScreen extends StatelessWidget {
         onRefresh: () async {
           await controller.fetchAllFeaturedProducts();
         },
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-            // Header
-            YPrimaryHeaderContainer(
-              child: Column(
-                children: [
-                  // App Bar
-                  YHomeAppBar(),
-                  SizedBox(height: YSizes.spaceBtwSections),
+        child: Obx(() {
+          if (controller.isLoading.value && controller.featuredProducts.isEmpty) {
+            return const YHomeShimmer();
+          }
 
-                  //Searchbar
-                  YSearchContainer(text: 'Search in Store'),
-                  SizedBox(height: YSizes.spaceBtwSections),
+          return SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: Column(
+              children: [
+              // Header
+              YPrimaryHeaderContainer(
+                child: Column(
+                  children: [
+                    // App Bar
+                    YHomeAppBar(),
+                    SizedBox(height: YSizes.spaceBtwSections),
 
-                  // Categories and Heading
-                  Padding(
-                    padding: EdgeInsets.only(left: YSizes.defaultSpace),
-                    child: Column(
-                      children: [
-                        // Heading
-                        YSectionHeading(
-                          title: 'Popular Categories',
-                          showActionButton: false,
-                          textColor: Colors.white,
+                    //Searchbar
+                    YSearchContainer(text: 'Search in Store'),
+                    SizedBox(height: YSizes.spaceBtwSections),
+
+                    // Categories and Heading
+                    Padding(
+                      padding: EdgeInsets.only(left: YSizes.defaultSpace),
+                      child: Column(
+                        children: [
+                          // Heading
+                          YSectionHeading(
+                            title: 'Popular Categories',
+                            showActionButton: false,
+                            textColor: Colors.white,
+                          ),
+                          SizedBox(height: YSizes.spaceBtwItems),
+
+                          // Categories
+                          YHomeCategories(),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: YSizes.spaceBtwSections),
+                  ],
+                ),
+              ),
+
+              // Body
+              Padding(
+                padding: const EdgeInsets.all(YSizes.defaultSpace),
+                child: Column(
+                  children: [
+                    // Promo Slider
+                    YPromoSlider(),
+                    SizedBox(height: YSizes.spaceBtwSections),
+
+                    // All Products
+                    YSectionHeading(
+                      title: 'All Products',
+                      onPressed: () => Get.to(
+                        () => AllProductsScreen(
+                          title: 'All Products',
+                          futureMethod: controller.fetchRandomProducts(limit: -1),
                         ),
-                        SizedBox(height: YSizes.spaceBtwItems),
-
-                        // Categories
-                        YHomeCategories(),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: YSizes.spaceBtwSections),
-                ],
-              ),
-            ),
-
-            // Body
-            Padding(
-              padding: const EdgeInsets.all(YSizes.defaultSpace),
-              child: Column(
-                children: [
-                  // Promo Slider
-                  YPromoSlider(),
-                  SizedBox(height: YSizes.spaceBtwSections),
-
-                  // All Products
-                  YSectionHeading(
-                    title: 'All Products',
-                    onPressed: () => Get.to(
-                      () => AllProductsScreen(
-                        title: 'All Products',
-                        futureMethod: controller.fetchRandomProducts(limit: -1),
                       ),
                     ),
-                  ),
-                  SizedBox(height: YSizes.spaceBtwItems),
-                  Obx(() {
-                    return YGridLayout(
-                      itemCount: controller.featuredProducts.length,
-                      itemBuilder: (_, index) => ProductCardVertical(
-                        product: controller.featuredProducts[index],
-                      ),
-                    );
-                  }),
-                ],
+                    SizedBox(height: YSizes.spaceBtwItems),
+                    Obx(() {
+                      return YGridLayout(
+                        itemCount: controller.featuredProducts.length,
+                        itemBuilder: (_, index) => ProductCardVertical(
+                          product: controller.featuredProducts[index],
+                        ),
+                      );
+                    }),
+                  ],
+                ),
               ),
+              ],
             ),
-            ],
-          ),
-        ),
+          );
+        }),
       ),
     );
   }

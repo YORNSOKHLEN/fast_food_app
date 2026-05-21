@@ -15,10 +15,10 @@ class CheckoutController extends GetxController {
 
   @override
   void onInit() {
-    // Default to PayWay QR so checkout always has a valid payment method.
+    // Default to KHQR so checkout always has a valid payment method.
     selectedPaymentMethod.value = PaymentMethodModel(
       image: YImage.khqr,
-      name: 'PayWay QR',
+      name: 'KHQR',
     );
     super.onInit();
   }
@@ -40,14 +40,14 @@ class CheckoutController extends GetxController {
               ),
               const SizedBox(height: YSizes.spaceBtwSections),
               Text(
-                'Choose PayWay QR to pay with a live merchant QR code.',
+                'Choose KHQR to pay with a live merchant QR code.',
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
               const SizedBox(height: YSizes.spaceBtwItems),
               YPaymentTile(
                 paymentMethod: PaymentMethodModel(
                   image: YImage.khqr,
-                  name: 'PayWay QR',
+                  name: 'KHQR',
                 ),
               ),
             ],
