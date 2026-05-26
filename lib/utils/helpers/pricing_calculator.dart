@@ -25,7 +25,7 @@ class YPricingCalculator {
   }
 
   static double getShippingCost(String location) {
-    return 0; // Flat $1 shipping
+    return 1; // Flat $1 shipping
   }
 
   /// Calculates shipping from coordinates.

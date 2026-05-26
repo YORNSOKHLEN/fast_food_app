@@ -120,6 +120,39 @@ class YNotificationService {
     );
   }
 
+  Future<void> showWelcomeNotification() async {
+    final storage = YLocalStorage.instance();
+    final pushEnabled = storage.readData<bool>(pushNotificationsKey) ?? true;
+
+    if (!pushEnabled) return;
+
+    final notificationId = DateTime.now().millisecondsSinceEpoch.remainder(2147483647);
+    final title = 'Welcome back!';
+    final body = 'You\'re logged in to Fast Food. Enjoy your meal! 🍔';
+
+    await _plugin.show(
+      notificationId,
+      title,
+      body,
+      const NotificationDetails(
+        android: AndroidNotificationDetails(
+          channelId,
+          channelName,
+          channelDescription: channelDescription,
+          importance: Importance.high,
+          priority: Priority.high,
+          icon: '@mipmap/ic_launcher',
+        ),
+        iOS: DarwinNotificationDetails(
+          presentAlert: true,
+          presentBadge: true,
+          presentSound: true,
+        ),
+      ),
+    );
+  }
+
+
   String _shortId(String orderId) {
     if (orderId.length <= 6) return orderId;
     return orderId.substring(0, 6);

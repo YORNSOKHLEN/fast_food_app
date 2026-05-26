@@ -3,9 +3,9 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
 import '../../../../data/repositories/authentication/authentication_repository.dart';
-import '../../../../utils/constants/image_strings.dart';
 import '../../../../utils/helpers/network_manager.dart';
 import '../../../../utils/popups/loaders.dart';
+import '../../../../utils/services/notification_service.dart';
 import '../../../personalization/controllers/user_controller.dart';
 
 class LoginController extends GetxController {
@@ -61,6 +61,9 @@ class LoginController extends GetxController {
       // Remove Loader
       YLoaders.hideSnackBar();
 
+      // Show welcome notification
+      await YNotificationService.instance.showWelcomeNotification();
+
       // Redirect
       AuthenticationRepository.instance.screenRedirect();
     } catch (e) {
@@ -91,6 +94,9 @@ class LoginController extends GetxController {
 
       // Save user record to Firestore
       await userController.saveUserRecord(userCredentials);
+
+      // Show welcome notification
+      await YNotificationService.instance.showWelcomeNotification();
 
       // Redirect
       AuthenticationRepository.instance.screenRedirect();

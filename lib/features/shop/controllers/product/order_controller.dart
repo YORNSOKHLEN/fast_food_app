@@ -1,19 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
-import '../../../../common/widgets/success_screen/success_screen.dart';
 import '../../../../data/repositories/authentication/authentication_repository.dart';
 import '../../../../data/repositories/order/order_repository.dart';
-import '../../../../navigation_menu.dart';
 import '../../../../utils/constants/enums.dart';
-import '../../../../utils/constants/image_strings.dart';
 import '../../../../utils/popups/loaders.dart';
-import '../../../../utils/services/notification_service.dart';
 import '../../models/cart_item_model.dart';
 import '../../models/order_model.dart';
 import '../product/coupon_controller.dart';
 import 'cart_controller.dart';
 import 'checkout_controller.dart';
+import '../../screens/checkout/payway_payment_screen.dart';
 
 class OrderController extends GetxController {
   static OrderController get instance => Get.find();
@@ -125,27 +122,27 @@ class OrderController extends GetxController {
       await orderRepository.incrementProductOrderCounts(orderItems);
 
       // Show a real device notification for the successful order.
-      await YNotificationService.instance.showOrderSuccessNotification(
-        orderId: order.id,
-        totalAmount: totalAmount,
-        itemCount: totalItemCount,
-      );
+      // await YNotificationService.instance.showOrderSuccessNotification(
+      //   orderId: order.id,
+      //   totalAmount: totalAmount,
+      //   itemCount: totalItemCount,
+      // );
 
       // CLEAR CART AFTER SUCCESSFUL CHECKOUT
       if (clearCartAfterOrder) {
         cartController.clearCart();
       }
 
-      // Remove loader before showing success screen
+      // Remove loader before showing the QR payment screen
       YLoaders.hideSnackBar();
 
-      // Show Success screen
+      // Show Payway QR payment screen
       Get.off(
-        () => SuccessScreen(
-          image: YImage.paymentSuccess,
-          title: 'Payment Success!',
-          subTitle: 'Your item will be shipped soon!',
-          onPressed: () => Get.offAll(() => const NavigationMenu()),
+        () => PaywayPaymentScreen(
+          orderId: finalOrderId,
+          totalAmount: totalAmount,
+          itemCount: totalItemCount,
+          paymentMethod: paymentMethod,
         ),
       );
     } catch (e) {

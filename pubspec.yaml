@@ -14,6 +14,7 @@ dependencies:
 
   # Utility Packages
   http: ^1.6.0
+  asn1lib: ^1.5.8
   intl: ^0.20.2
   logger: ^2.6.2
   lottie: ^3.3.2
@@ -22,6 +23,7 @@ dependencies:
   connectivity_plus: ^7.0.0
   flutter_native_splash: ^2.4.7
   smooth_page_indicator: ^2.0.1
+  pointycastle: ^3.9.1
 
   #icon
   iconsax: ^0.0.8
@@ -36,6 +38,7 @@ dependencies:
   carousel_slider: ^5.1.1
   flutter_rating_bar: ^4.0.1
   khqr_sdk: ^2.0.0
+  qr_flutter: ^4.1.0
 
   # Firebase
   firebase_core: ^4.3.0
